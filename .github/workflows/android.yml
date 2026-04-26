@@ -1,0 +1,45 @@
+name: Android CI/CD Pipeline
+
+# Define quando a Action vai rodar
+on:
+  push:
+    branches: [ "main", "develop" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest # O servidor que vai compilar seu app
+
+    steps:
+    # 1. Baixa o código do seu repositório
+    - name: Checkout do código
+      uses: actions/checkout@v4
+
+    # 2. Configura o Java (Projetos Android modernos usam JDK 17)
+    - name: Configurar JDK 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: gradle # Fundamental: faz cache das dependências (Retrofit/Glide) para acelerar builds futuros
+
+    # 3. Dá permissão ao script do Gradle para executar
+    - name: Dar permissão de execução para o Gradle Wrapper
+      run: chmod +x gradlew
+
+    # 4. Roda o Lint para checar erros de código (opcional, mas recomendado)
+    - name: Rodar Android Lint
+      run: ./gradlew lint
+
+    # 5. Compila o projeto e gera o APK de Debug
+    - name: Construir APK (Debug)
+      run: ./gradlew assembleDebug
+
+    # 6. Salva o APK gerado como um "Artefato" no GitHub para você baixar
+    - name: Upload do APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-debug-apk
+        path: app/build/outputs/apk/debug/app-debug.apk
