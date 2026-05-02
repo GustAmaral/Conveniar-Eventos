@@ -26,6 +26,7 @@
         android:layout_marginRight="35dp"
         android:layout_below="@id/txt_selecione_fundacao"
         android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dropdown"
         android:spinnerMode="dropdown" />
 
 </RelativeLayout>
