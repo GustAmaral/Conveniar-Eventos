@@ -76,7 +76,7 @@ public class MenuSelecione extends AppCompatActivity {
         });
 
         // 7. Spinner de Fundação
-        String[] fundacoes = {"Selecione", "FEPE — Fundação de Apoio", "FUNTEF-PR", "FACEV"};
+        String[] fundacoes = {"Selecione", "FEPE — Fundação de Apoio ao Ensino, Pesquisa e Extensão", "FUNTEF-PR — Fundação de Apoio à UTFPR ", "FACEV — Fundação de Apoio da UFV"};
         spinnerFundacao.setAdapter(new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, fundacoes));
         spinnerFundacao.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
