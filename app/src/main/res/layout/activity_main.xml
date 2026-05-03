@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#E0E5E9"
+    android:background="#DBE2E6"
     tools:context=".ui.MainActivity">
 
     <!-- CABEÇALHO BRANCO -->
@@ -29,6 +29,13 @@
             android:contentDescription="Logo Conveniar" />
     </RelativeLayout>
 
+    <View
+        android:id="@+id/faixaCinza"
+        android:layout_width="match_parent"
+        android:layout_height="10dp"
+        android:background="#EBF0F3"
+        android:layout_below="@id/header_layout" />
+
     <!-- TÍTULO -->
     <TextView
         android:id="@+id/txt_titulo"
@@ -38,7 +45,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
         android:text="Conveniar Eventos"
-        android:textColor="#005B9A"
+        android:textColor="#0067AB"
         android:textSize="32sp"
         android:textStyle="bold" />
 
@@ -52,12 +59,13 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
-        android:backgroundTint="#0066A5"
+        android:backgroundTint="#0067AB"
         android:text="Acessar lista de eventos"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
         android:textSize="22sp"
-        app:cornerRadius="12dp" />
+        app:cornerRadius="12dp"
+        android:onClick="navega_tela_menu"/>
 
     <!-- BOTÃO: ÁREA DO INSCRITO -->
     <Button
@@ -69,7 +77,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="32dp"
-        android:backgroundTint="#0066A5"
+        android:backgroundTint="#0067AB"
         android:text="Área do inscrito"
         android:textColor="#FFFFFF"
         android:textAllCaps="false"

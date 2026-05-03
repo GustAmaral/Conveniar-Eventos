@@ -1,6 +1,8 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,5 +24,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    public void navega_tela_menu(View v){
+        Intent it = new Intent(this, MenuSelecione.class);
+        startActivity(it);
     }
 }

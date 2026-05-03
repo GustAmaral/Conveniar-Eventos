@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DBE2E6"
+    tools:context=".ui.MenuSelecione">
+
+    <TextView
+        android:id="@+id/txt_selecione_fundacao"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="32dp"
+        android:text="Selecione a fundação"
+        android:textColor="#0067AB"
+        android:textSize="28sp" />
+
+    <Spinner
+        android:id="@+id/spinner_fundacoes"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginLeft="35dp"
+        android:layout_marginRight="35dp"
+        android:layout_below="@id/txt_selecione_fundacao"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/bg_dropdown"
+        android:spinnerMode="dropdown" />
+
+    <!-- preenche o menu de cursos-->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_lista_eventos"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/spinner_fundacoes"
+        android:layout_margin="16dp"
+        android:visibility="gone"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="4dp">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_eventos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="4dp" />
+
+    </androidx.cardview.widget.CardView>
+
+</RelativeLayout>
