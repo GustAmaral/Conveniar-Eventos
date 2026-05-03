@@ -64,7 +64,8 @@
         android:textColor="#FFFFFF"
         android:textAllCaps="false"
         android:textSize="22sp"
-        app:cornerRadius="12dp" />
+        app:cornerRadius="12dp"
+        android:onClick="navega_tela_menu"/>
 
     <!-- BOTÃO: ÁREA DO INSCRITO -->
     <Button
