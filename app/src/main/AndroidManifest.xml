@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CONVENIAREventos">
         <activity
-            android:name=".MenuSelecione"
+            android:name=".ui.MenuSelecione"
             android:exported="false" />
         <activity
             android:name=".ui.MainActivity"

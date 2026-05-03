@@ -1,4 +1,4 @@
-package com.projeto.conveniar_eventos;
+package com.projeto.conveniar_eventos.ui;
 
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.projeto.conveniar_eventos.R;
 
 public class MenuSelecione extends AppCompatActivity {
 
@@ -38,7 +40,7 @@ public class MenuSelecione extends AppCompatActivity {
                 R.layout.item_spinner,
                 listaExemplo
         );
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(R.layout.item_spinner);
         spinnerFundacoes.setAdapter(adapter);
     }
 }
