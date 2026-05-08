@@ -16,6 +16,7 @@ import com.projeto.conveniar_eventos.models.Evento;
 import java.util.ArrayList;
 import java.util.List;
 
+// tela onde o usuário seleciona uma fundação e visualiza os eventos disponíveis em cada uma
 public class MenuSelecione extends AppCompatActivity {
     private EventoAdapter adapter;
     private List<Evento> listaCompleta = new ArrayList<>();
@@ -113,10 +114,10 @@ public class MenuSelecione extends AppCompatActivity {
 
     private void carregarDados() {
         listaCompleta.clear();
-        listaCompleta.add(new Evento("Curso de especialização em fisioterapia", "Em andamento"));
-        listaCompleta.add(new Evento("Curso de atualização em dor lombar", "Em oferta"));
-        listaCompleta.add(new Evento("CROSSROADS 2026 - Congresso Internacional", "Em oferta"));
-        listaCompleta.add(new Evento("Atividade de musculação", "Em andamento"));
+        listaCompleta.add(new Evento("Curso de especialização em fisioterapia", "Em andamento", 0));
+        listaCompleta.add(new Evento("Curso de atualização em dor lombar", "Em oferta", 0));
+        listaCompleta.add(new Evento("CROSSROADS 2026 - Congresso Internacional", "Em oferta", 10));
+        listaCompleta.add(new Evento("Atividade de musculação", "Em andamento", 0));
         aplicarFiltros(""); // Inicializa a lista mostrando tudo
     }
 }
