@@ -1,5 +1,7 @@
 package com.projeto.conveniar_eventos.adapters;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
@@ -10,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.models.Evento;
+import com.projeto.conveniar_eventos.ui.DetalhesEvento;
+
 import java.util.List;
 
 public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder> {
@@ -42,6 +46,16 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
             shape.setColor(Color.parseColor("#FFF9C4")); // Amarelo claro
         }
         holder.tvSituacao.setBackground(shape);
+
+        // pra abrir detalhes do evento
+        holder.itemView.setOnClickListener(v -> {
+            Context context = v.getContext();
+            Intent it = new Intent(context, DetalhesEvento.class);
+            it.putExtra("NOME_CURSO", evento.getCurso());
+            it.putExtra("VAGAS", evento.getVagas());
+
+            context.startActivity(it);
+        });
     }
 
     @Override
