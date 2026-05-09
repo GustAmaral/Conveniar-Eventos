@@ -4,11 +4,13 @@ public class Evento {
     private String curso;
     private String situacao;
     private Integer vagas;
+    private String dataInicio;
 
-    public Evento(String curso, String situacao, Integer vagas) {
+    public Evento(String curso, String situacao, Integer vagas, String dataInicio) {
         this.curso = curso;
         this.situacao = situacao;
         this.vagas = vagas;
+        this.dataInicio = dataInicio;
     }
 
     public String getCurso() {
@@ -20,6 +22,7 @@ public class Evento {
     public Integer getVagas(){
         return vagas;
     }
+    public String getDataInicio() { return dataInicio; }
 
     public void setCurso(String curso) {
         this.curso = curso;
@@ -30,4 +33,5 @@ public class Evento {
     public void setVagas(Integer vagas) {
         this.vagas = vagas;
     }
+    public void setDataInicio(String dataInicio) { this.dataInicio = dataInicio; }
 }
