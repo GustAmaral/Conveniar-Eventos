@@ -8,97 +8,42 @@
     android:padding="16dp">
 
     <TextView
-        android:id="@+id/tv_dados_curso"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Dados do curso"
         android:textColor="#0067AB"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:layout_marginTop="8dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="12dp">
-
-        <TextView
-            android:id="@+id/tv_nome_curso"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Nome do curso: "
-            android:textColor="#555555"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_valor_nome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#555555"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="4dp">
-
-        <TextView
-            android:id="@+id/tv_vagas_disponiveis"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Vagas disponíveis: "
-            android:textColor="#555555"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_valor_vagas"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:textColor="#555555"
-            android:textSize="18sp" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btn_inscrever"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:backgroundTint="#0067AB"
-        android:text="Inscrever-me"
-        android:textSize="24sp"
-        android:textColor="#FFFFFF" />
+        android:textSize="22sp"
+        android:textStyle="bold" />
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/tv_valor_nome"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="Informações"
-        android:textColor="#0067AB"
-        android:textSize="20sp"
+        android:layout_marginTop="16dp"
+        android:text="Nome do curso"
+        android:textColor="#333"
+        android:textSize="18sp"
         android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tv_valor_vagas"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Vagas: 0"
+        android:textColor="#666"
+        android:textSize="16sp" />
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="2dp">
+        android:layout_marginTop="20dp"
+        app:cardCornerRadius="12dp">
 
         <WebView
             android:id="@+id/web_informacoes"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </androidx.cardview.widget.CardView>
-
 </LinearLayout>

@@ -47,12 +47,13 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         }
         holder.tvSituacao.setBackground(shape);
 
-        // pra abrir detalhes do evento
         holder.itemView.setOnClickListener(v -> {
             Context context = v.getContext();
             Intent it = new Intent(context, DetalhesEvento.class);
             it.putExtra("NOME_CURSO", evento.getCurso());
+            it.putExtra("SITUACAO", evento.getSituacao());
             it.putExtra("VAGAS", evento.getVagas());
+            it.putExtra("DATA_INICIO", evento.getDataInicio());
 
             context.startActivity(it);
         });

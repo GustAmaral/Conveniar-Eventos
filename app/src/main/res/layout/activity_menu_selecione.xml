@@ -99,12 +99,18 @@
 
             <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:gravity="center_vertical">
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="A partir de:" android:textColor="#FFF" />
-                <TextView android:id="@+id/tv_data" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:background="@drawable/bg_pilula" android:paddingHorizontal="12dp" android:paddingVertical="4dp" android:text="DD/MM/AAAA" android:textColor="#555" />
-            </LinearLayout>
-
-            <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:gravity="center_vertical">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Área:" android:textColor="#FFF" />
-                <Spinner android:id="@+id/spinner_area" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:background="@drawable/bg_pilula" />
+                <EditText
+                    android:id="@+id/edit_data_filtro"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:background="@drawable/bg_pilula"
+                    android:paddingHorizontal="12dp"
+                    android:paddingVertical="4dp"
+                    android:hint="DD/MM/AAAA"
+                    android:inputType="text"
+                    android:textColor="#555"
+                    android:textSize="14sp"/>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
