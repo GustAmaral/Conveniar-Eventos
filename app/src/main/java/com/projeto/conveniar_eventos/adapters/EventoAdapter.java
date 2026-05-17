@@ -3,7 +3,6 @@ package com.projeto.conveniar_eventos.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.models.Evento;
 import com.projeto.conveniar_eventos.ui.DetalhesEvento;
-
 import java.util.List;
 
 public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoViewHolder> {
@@ -36,33 +34,32 @@ public class EventoAdapter extends RecyclerView.Adapter<EventoAdapter.EventoView
         holder.tvCurso.setText(evento.getCurso());
         holder.tvSituacao.setText(evento.getSituacao().toUpperCase());
 
-        // Configuração visual da Tag (Etiqueta)
-        GradientDrawable shape = new GradientDrawable();
-        shape.setCornerRadius(15f);
+        // Criar o fundo colorido (Pílula) para o status
+        android.graphics.drawable.GradientDrawable gd = new android.graphics.drawable.GradientDrawable();
+        gd.setCornerRadius(20f);
 
         if (evento.getSituacao().equalsIgnoreCase("Em oferta")) {
-            shape.setColor(Color.parseColor("#C8E6C9")); // Verde claro
+            holder.tvSituacao.setTextColor(android.graphics.Color.parseColor("#2E7D32")); // Verde escuro
+            gd.setColor(android.graphics.Color.parseColor("#C8E6C9")); // Verde claro
         } else {
-            shape.setColor(Color.parseColor("#FFF9C4")); // Amarelo claro
+            holder.tvSituacao.setTextColor(android.graphics.Color.parseColor("#F57F17")); // Laranja escuro
+            gd.setColor(android.graphics.Color.parseColor("#FFF9C4")); // Amarelo claro
         }
-        holder.tvSituacao.setBackground(shape);
+        holder.tvSituacao.setBackground(gd);
 
+        // Clique para abrir detalhes
+        // Dentro do onBindViewHolder do seu EventoAdapter:
         holder.itemView.setOnClickListener(v -> {
-            Context context = v.getContext();
-            Intent it = new Intent(context, DetalhesEvento.class);
+            Intent it = new Intent(v.getContext(), DetalhesEvento.class);
             it.putExtra("NOME_CURSO", evento.getCurso());
-            it.putExtra("SITUACAO", evento.getSituacao());
-            it.putExtra("VAGAS", evento.getVagas());
-            it.putExtra("DATA_INICIO", evento.getDataInicio());
-
-            context.startActivity(it);
+            it.putExtra("DATA_INICIO", evento.getDataInicio()); // ESSENCIAL
+            it.putExtra("URL_DETALHES", evento.getUrlDetalhes());
+            v.getContext().startActivity(it);
         });
     }
 
     @Override
-    public int getItemCount() {
-        return listaEventos.size();
-    }
+    public int getItemCount() { return listaEventos.size(); }
 
     public static class EventoViewHolder extends RecyclerView.ViewHolder {
         TextView tvCurso, tvSituacao;
