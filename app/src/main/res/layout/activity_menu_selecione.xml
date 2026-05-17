@@ -126,6 +126,8 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_eventos"
             android:layout_width="match_parent"
-            android:layout_height="350dp" />
+            android:layout_height="wrap_content"
+            android:paddingBottom="8dp"
+            android:clipToPadding="false" />
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

@@ -19,49 +19,44 @@ public class DetalhesEvento extends AppCompatActivity {
         WebView webView = findViewById(R.id.web_informacoes);
 
         // 2. Recuperar os dados enviados pelo EventoAdapter
-        // Importante: As strings "NOME_CURSO" e "VAGAS" devem ser iguais às do Adapter
         String nomeEvento = getIntent().getStringExtra("NOME_CURSO");
-        int vagas = getIntent().getIntExtra("VAGAS", 0);
         String dataInicio = getIntent().getStringExtra("DATA_INICIO");
+        int vagas = getIntent().getIntExtra("VAGAS", 0);
 
-        // 3. Exibir os dados nos TextViews (Design do topo)
+        // 3. Exibir os dados básicos nos TextViews
         if (nomeEvento != null) {
             tvNome.setText(nomeEvento);
         }
 
-        String textoVagas = "Vagas disponíveis: " + vagas;
-        if (dataInicio != null) {
-            textoVagas += " | Início: " + dataInicio;
+        // Exibe a data e as vagas (ou aviso de edital)
+        String infoVagas = (dataInicio != null ? "Início: " + dataInicio + " | " : "") +
+                "Vagas: " + (vagas > 0 ? vagas : "Consulte o edital");
+        tvVagas.setText(infoVagas);
+
+        // 4. Restaurar o conteúdo estático do WebView
+        if (webView != null) {
+            String htmlDocumento = "<html><head>" +
+                    "<style>" +
+                    "body { font-family: sans-serif; padding: 15px; line-height: 1.5; color: #444; background-color: #ffffff; }" +
+                    "h2 { color: #0067AB; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }" +
+                    "p { font-size: 14px; }" +
+                    "ul { padding-left: 20px; font-size: 14px; }" +
+                    "li { margin-bottom: 8px; }" +
+                    ".highlight { color: #0067AB; font-weight: bold; }" +
+                    "</style>" +
+                    "</head><body>" +
+                    "<h2>Informações Gerais</h2>" +
+                    "<p>Detalhes sobre o curso <span class='highlight'>" + (nomeEvento != null ? nomeEvento : "selecionado") + "</span>.</p>" +
+                    "<p><b>Regras de Inscrição:</b></p>" +
+                    "<ul>" +
+                    "<li>A inscrição deve ser confirmada após o pagamento do boleto.</li>" +
+                    "<li>O certificado será emitido para alunos com 75% de presença.</li>" +
+                    "<li>O material didático será enviado por e-mail 24h antes do início.</li>" +
+                    "</ul>" +
+                    "<p>Para mais informações, acesse o portal da fundação ou entre em contato com o suporte.</p>" +
+                    "</body></html>";
+
+            webView.loadDataWithBaseURL(null, htmlDocumento, "text/html", "UTF-8", null);
         }
-        tvVagas.setText(textoVagas);
-
-        // 4. Configurar e carregar o conteúdo no WebView
-        // Ativamos o JavaScript caso o HTML precise
-        webView.getSettings().setJavaScriptEnabled(true);
-
-        // Criamos um HTML básico para as "Informações Adicionais"
-        String htmlDocumento = "<html><head>" +
-                "<style>" +
-                "body { font-family: sans-serif; padding: 15px; line-height: 1.5; color: #444; background-color: #ffffff; }" +
-                "h2 { color: #0067AB; font-size: 18px; border-bottom: 1px solid #eee; padding-bottom: 8px; }" +
-                "p { font-size: 14px; }" +
-                "ul { padding-left: 20px; font-size: 14px; }" +
-                "li { margin-bottom: 8px; }" +
-                ".highlight { color: #0067AB; font-weight: bold; }" +
-                "</style>" +
-                "</head><body>" +
-                "<h2>Edital e Regras</h2>" +
-                "<p>Bem-vindo às informações detalhadas do curso <span class='highlight'>" + nomeEvento + "</span>.</p>" +
-                "<p><b>Critérios de Participação:</b></p>" +
-                "<ul>" +
-                "<li>Inscrição obrigatória via sistema.</li>" +
-                "<li>Frequência mínima de 75% para certificado.</li>" +
-                "<li>Material didático incluso em formato PDF.</li>" +
-                "</ul>" +
-                "<p>Para mais dúvidas, entre em contato com a coordenação da fundação selecionada.</p>" +
-                "</body></html>";
-
-        // Carrega o HTML no WebView
-        webView.loadDataWithBaseURL(null, htmlDocumento, "text/html", "UTF-8", null);
     }
 }
