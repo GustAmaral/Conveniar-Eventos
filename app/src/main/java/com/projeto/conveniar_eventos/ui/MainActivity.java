@@ -1,8 +1,10 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Base64; // Adicionado
 import android.util.Log;    // Adicionado
+import android.view.View;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -66,5 +68,10 @@ public class MainActivity extends AppCompatActivity {
                 Log.e(TAG, "Falha crítica na conexão: " + t.getMessage());
             }
         });
+    }
+
+    public void navega_tela_menu(View v){
+        Intent it = new Intent(this, MenuSelecione.class);
+        startActivity(it);
     }
 }
