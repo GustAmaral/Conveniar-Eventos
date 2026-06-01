@@ -29,4 +29,16 @@
         </item>
 
     </style>
+
+    <style name="Theme.ConveniarEventos.Splash"
+        parent="Theme.SplashScreen">
+
+        <item name="windowSplashScreenBackground">#DBE2E6</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/conveniar_icone</item>
+
+        <item name="postSplashScreenTheme">
+            @style/Theme.CONVENIAREventos
+        </item>
+
+    </style>
 </resources>
