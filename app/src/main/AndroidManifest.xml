@@ -21,6 +21,10 @@
             android:exported="false" />
 
         <activity
+            android:name=".ui.SplashActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ui.DetalhesEvento"
             android:name=".ui.InscricaoEvento"
             android:exported="false" />
 

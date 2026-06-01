@@ -20,6 +20,10 @@
         <item name="windowSplashScreenBackground">#DBE2E6</item>
         <item name="windowSplashScreenAnimatedIcon">@drawable/conveniar_icone</item>
 
+        <!-- Cores de fundo e superfícies do padrão do projeto -->
+        <item name="android:windowBackground">#DBE2E6</item>
+        <item name="android:fontFamily">@font/instrument_sans_ttf</item>
+        <item name="fontFamily">@font/instrument_sans_ttf</item>
         <item name="postSplashScreenTheme">
             @style/Theme.CONVENIAREventos
         </item>
