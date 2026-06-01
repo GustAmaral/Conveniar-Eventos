@@ -3,6 +3,8 @@
     <style name="Base.Theme.CONVENIAREventos" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
         <item name="android:statusBarColor">#DBE2E6</item>
+        <item name="android:fontFamily">@font/instrument_sans_ttf</item>
+        <item name="fontFamily">@font/instrument_sans_ttf</item>
     </style>
 
     <style name="Theme.CONVENIAREventos" parent="Base.Theme.CONVENIAREventos" />
