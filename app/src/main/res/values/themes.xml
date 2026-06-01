@@ -5,9 +5,14 @@
         <item name="android:statusBarColor">#DBE2E6</item>
         <item name="android:fontFamily">@font/instrument_sans_ttf</item>
         <item name="fontFamily">@font/instrument_sans_ttf</item>
-    </style>
-
-    <style name="Theme.CONVENIAREventos" parent="Base.Theme.CONVENIAREventos" />
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema Base do Aplicativo para Modo Claro (Day) -->
+    <style name="Theme.ConveniarEventos" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Cor primária de elementos estruturais e botões -->
+        <item name="colorPrimary">#0067AB</item>
+        <item name="colorPrimaryDark">#004B7D</item>
+        <item name="colorAccent">#0067AB</item>
 
     <style name="Theme.ConveniarEventos.Splash"
         parent="Theme.SplashScreen">
