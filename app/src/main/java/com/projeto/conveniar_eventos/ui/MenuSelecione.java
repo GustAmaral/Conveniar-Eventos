@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
@@ -40,6 +41,7 @@ public class MenuSelecione extends AppCompatActivity {
     private LinearLayout containerFiltros;
     private EditText editSearch, editDataFiltro;
     private RadioGroup rgStatus;
+    private RadioButton rbAndamento, rbOferta;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +55,8 @@ public class MenuSelecione extends AppCompatActivity {
         editSearch       = findViewById(R.id.edit_search);
         editDataFiltro   = findViewById(R.id.edit_data_filtro);
         rgStatus         = findViewById(R.id.rg_status);
+        rbAndamento      = findViewById(R.id.rb_andamento);
+        rbOferta         = findViewById(R.id.rb_oferta);
         Spinner spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
         Button btnFiltros        = findViewById(R.id.btn_filtros);
 
@@ -62,7 +66,6 @@ public class MenuSelecione extends AppCompatActivity {
         rvEventos.setAdapter(adapter);
 
         // 3. Spinner de fundações
-        // TODO: adicionar outras fundações aqui quando a API estiver integrada
         String[] fundacoes = {"Selecione a fundação", "Cientec", "Fundação de Apoio"};
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, fundacoes);
@@ -73,7 +76,7 @@ public class MenuSelecione extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 1) {
-                    carregarDados(); // Carrega mock da Cientec
+                    carregarDados();
                 } else {
                     cardLista.setVisibility(View.GONE);
                     listaCompleta.clear();
@@ -90,7 +93,7 @@ public class MenuSelecione extends AppCompatActivity {
             containerFiltros.setVisibility(visivel ? View.GONE : View.VISIBLE);
         });
 
-        // 5. Escutadores para filtro em tempo real
+        // 5. Escutadores para filtro em tempo real (Texto e Data)
         TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { aplicarFiltros(); }
@@ -98,18 +101,32 @@ public class MenuSelecione extends AppCompatActivity {
         };
         editSearch.addTextChangedListener(watcher);
         editDataFiltro.addTextChangedListener(watcher);
-        rgStatus.setOnCheckedChangeListener((group, checkedId) -> aplicarFiltros());
+
+        // 6. Lógica Customizada: Permitir desclicar nos RadioButtons de Status
+        View.OnClickListener radioClickListener = new View.OnClickListener() {
+            private int ultimoIdMarcado = -1;
+
+            @Override
+            public void onClick(View v) {
+                int idClicado = v.getId();
+                if (idClicado == ultimoIdMarcado) {
+                    rgStatus.clearCheck();
+                    ultimoIdMarcado = -1;
+                } else {
+                    ultimoIdMarcado = idClicado;
+                }
+                aplicarFiltros();
+            }
+        };
+
+        if (rbAndamento != null && rbOferta != null) {
+            rbAndamento.setOnClickListener(radioClickListener);
+            rbOferta.setOnClickListener(radioClickListener);
+        }
     }
 
-    /**
-     * Carrega os dados do MockRepository.
-     *
-     * TROCA FUTURA: substitua MockRepository.getEventos() pela chamada
-     * à sua ApiRepository quando a autenticação estiver funcionando.
-     */
     private void carregarDados() {
         listaCompleta.clear();
-        // Adicione o 'this' dentro dos parênteses:
         listaCompleta.addAll(MockRepository.getEventos(this));
         aplicarFiltros();
         cardLista.setVisibility(View.VISIBLE);
@@ -123,7 +140,6 @@ public class MenuSelecione extends AppCompatActivity {
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date dataLimite = null;
 
-        // Só tenta parsear a data quando o campo estiver completo (10 chars = DD/MM/AAAA)
         if (dataBuscaStr.length() == 10) {
             try {
                 dataLimite = sdf.parse(dataBuscaStr);
@@ -141,7 +157,7 @@ public class MenuSelecione extends AppCompatActivity {
             if (selectedId == R.id.rb_oferta && !e.getSituacao().equalsIgnoreCase("Em oferta")) continue;
             if (selectedId == R.id.rb_andamento && !e.getSituacao().equalsIgnoreCase("Em andamento")) continue;
 
-            // Filtro por data (exibe eventos a partir da data informada)
+            // Filtro por data
             if (dataLimite != null) {
                 try {
                     Date dataEvento = sdf.parse(e.getDataInicio());

@@ -1,9 +1,19 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.CONVENIAREventos" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
-    </style>
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Tema Base do Aplicativo para Modo Claro (Day) -->
+    <style name="Theme.ConveniarEventos" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Cor primária de elementos estruturais e botões -->
+        <item name="colorPrimary">#0067AB</item>
+        <item name="colorPrimaryDark">#004B7D</item>
+        <item name="colorAccent">#0067AB</item>
 
-    <style name="Theme.CONVENIAREventos" parent="Base.Theme.CONVENIAREventos" />
+        <!-- Modifica explicitamente a cor roxa da Barra de Status do topo -->
+        <item name="android:statusBarColor">#0067AB</item>
+
+        <!-- Mantém os ícones da barra (bateria, wifi, hora) brancos para contrastar com o azul -->
+        <item name="android:windowLightStatusBar">false</item>
+
+        <!-- Cores de fundo e superfícies do padrão do projeto -->
+        <item name="android:windowBackground">#DBE2E6</item>
+    </style>
 </resources>

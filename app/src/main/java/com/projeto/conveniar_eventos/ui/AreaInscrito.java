@@ -1,5 +1,6 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
@@ -10,10 +11,16 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
+import com.projeto.conveniar_eventos.data.MockRepository;
+import com.projeto.conveniar_eventos.models.Evento;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AreaInscrito extends AppCompatActivity {
+
+    private ArrayList<String> stringsExibicao = new ArrayList<>();
+    private ArrayList<Integer> idsEventosInscritos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +36,49 @@ public class AreaInscrito extends AppCompatActivity {
 
         tvBoasVindas.setText("Painel de: " + nome);
 
-        ArrayList<String> dadosInscricoes = new ArrayList<>();
         DatabaseHelper db = DatabaseHelper.getInstance(this);
         Cursor c = db.getInscricoesUsuario(userId);
+
+        // Carrega os eventos mockados para fazer a busca do nome em memória
+        List<Evento> todosEventos = MockRepository.getEventos(this);
 
         if (c != null) {
             while (c.moveToNext()) {
                 int evId = c.getInt(0);
                 String data = c.getString(1);
-                dadosInscricoes.add("Curso ID: " + evId + " | Inscrito em: " + data);
+
+                // Busca o objeto Evento real para extrair o nome inteligível do curso
+                String nomeCurso = "Curso Desconhecido (ID: " + evId + ")";
+                for (Evento e : todosEventos) {
+                    if (e.getId() == evId) {
+                        nomeCurso = e.getCurso();
+                        break;
+                    }
+                }
+
+                stringsExibicao.add(nomeCurso + "\nInscrito em: " + data);
+                idsEventosInscritos.add(evId); // Mantém o ID guardado na mesma ordem
             }
             c.close();
         }
 
-        if (dadosInscricoes.isEmpty()) {
+        if (stringsExibicao.isEmpty()) {
             tvVazio.setVisibility(View.VISIBLE);
             lvInscricoes.setVisibility(View.GONE);
         } else {
             tvVazio.setVisibility(View.GONE);
             lvInscricoes.setVisibility(View.VISIBLE);
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, dadosInscricoes);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringsExibicao);
             lvInscricoes.setAdapter(adapter);
+
+            // Ação de clique para redirecionar de volta aos detalhes do evento real
+            lvInscricoes.setOnItemClickListener((parent, view, position, id) -> {
+                int eventoIdSelecionado = idsEventosInscritos.get(position);
+                Intent it = new Intent(AreaInscrito.this, DetalhesEvento.class);
+                it.putExtra("EVENTO_ID", eventoIdSelecionado); // Repassa o ID mapeado
+                startActivity(it);
+            });
         }
     }
 }
