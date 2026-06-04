@@ -1,10 +1,12 @@
 package com.projeto.conveniar_eventos.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Base64; // Adicionado
 import android.util.Log;    // Adicionado
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,56 +24,37 @@ import retrofit2.Response; // Adicionado
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = "CONVENIAR_API";
-    private final String API_KEY = "78197722-cb8e-430f-8e19-5b7588236def";
-    private final String USER = "GrupoEventos";
-    private final String PASS = "GrupoEventos@1";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
 
-        // Chama a autenticação assim que a tela abre
-        solicitarToken();
-    }
-
-    private void solicitarToken() {
-        String authString = USER + ":" + PASS;
-        // O NO_WRAP é essencial para não quebrar o header
-        String base64Auth = Base64.encodeToString(authString.getBytes(), Base64.NO_WRAP).trim();
-        String basicAuth = "Basic " + base64Auth;
-
-        Log.d(TAG, "Iniciando solicitação de token...");
-
-        RetrofitClient.getInstance().getToken(API_KEY, basicAuth).enqueue(new Callback<TokenResponse>() {
-            @Override
-            public void onResponse(Call<TokenResponse> call, Response<TokenResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    String token = response.body().getAccessToken();
-                    Log.d(TAG, "SUCESSO! Token recebido: " + token);
-                    // Aqui você poderá chamar a função de buscar usuários futuramente
-                } else {
-                    Log.e(TAG, "Erro " + response.code() + ": Permissão negada ou credenciais inválidas.");
-                }
-            }
-
-            @Override
-            public void onFailure(Call<TokenResponse> call, Throwable t) {
-                Log.e(TAG, "Falha crítica na conexão: " + t.getMessage());
-            }
-        });
+        // Configuração explícita do click da Área do inscrito
+        Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
+        btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
     }
 
     public void navega_tela_menu(View v){
         Intent it = new Intent(this, MenuSelecione.class);
+        startActivity(it);
+    }
+
+    private void navegaAreaInscrito() {
+        SharedPreferences prefs = getSharedPreferences("conveniar_prefs", MODE_PRIVATE);
+        long userId = prefs.getLong("usuario_id", -1);
+
+        Intent it;
+        if (userId != -1) {
+            it = new Intent(this, AreaInscrito.class);
+        } else {
+            it = new Intent(this, CadastroUsuario.class);
+        }
         startActivity(it);
     }
 }

@@ -12,22 +12,33 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.CONVENIAREventos">
+        android:theme="@style/Theme.ConveniarEventos"> <activity
+        android:name=".ui.DetalhesEvento"
+        android:exported="false" />
+
         <activity
-            android:name=".ui.DetalhesEvento"
+            android:name=".ui.CadastroUsuario"
             android:exported="false" />
+
+        <activity
+            android:name=".ui.InscricaoEvento"
+            android:exported="false" />
+
+        <activity
+            android:name=".ui.AreaInscrito"
+            android:exported="false" />
+
         <activity
             android:name=".ui.MenuSelecione"
             android:exported="false" />
+
         <activity
             android:name=".ui.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-    </application>
 
-</manifest>
+    </application> </manifest>
