@@ -65,21 +65,21 @@
         android:onClick="navega_tela_menu"/>
 
     <!-- BOTÃO: ÁREA DO INSCRITO -->
-<!--    <Button-->
-<!--        android:id="@+id/btn_area_inscrito"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_below="@id/btn_lista_eventos"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:layout_marginEnd="32dp"-->
-<!--        android:backgroundTint="#0067AB"-->
-<!--        android:text="Área do inscrito"-->
-<!--        android:textColor="#FFFFFF"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textSize="22sp"-->
-<!--        app:cornerRadius="12dp" />-->
+    <Button
+        android:id="@+id/btn_area_inscrito"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_below="@id/btn_lista_eventos"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="32dp"
+        android:backgroundTint="#0067AB"
+        android:text="Área do inscrito"
+        android:textColor="#FFFFFF"
+        android:textAllCaps="false"
+        android:textSize="22sp"
+        app:cornerRadius="12dp" />
 
     <ImageView
         android:id="@+id/img_logo_cientec"

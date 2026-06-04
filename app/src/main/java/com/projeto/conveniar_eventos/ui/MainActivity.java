@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -18,12 +16,6 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.projeto.conveniar_eventos.R;
-import com.projeto.conveniar_eventos.api.RetrofitClient; // Ajuste conforme seu pacote
-import com.projeto.conveniar_eventos.api.TokenResponse;   // Ajuste conforme seu pacote
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,13 +24,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
+        // ── Mantém o Design de barras unificadas da branch de front-end ──
         getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(
                         getWindow(),
                         getWindow().getDecorView()
                 );
-        controller.setAppearanceLightNavigationBars(true);
+        if (controller != null) {
+            controller.setAppearanceLightNavigationBars(true);
+        }
 
         setContentView(R.layout.activity_main);
 
@@ -48,9 +43,11 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // Configuração explícita do click da Área do inscrito
-        //Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
-        //btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
+        // ── REATIVADO: Configuração do clique da Área do Inscrito ──
+        Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
+        if (btnAreaInscrito != null) {
+            btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
+        }
     }
 
     public void navega_tela_menu(View v){
