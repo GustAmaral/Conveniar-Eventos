@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#DBE2E6"
+    android:padding="24dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/layout_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Identifique-se"
+                android:textColor="#0067AB"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp"/>
+
+            <EditText
+                android:id="@+id/et_login_cpf"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="CPF (apenas números)"
+                android:inputType="number"
+                android:background="@android:color/white"
+                android:paddingLeft="12dp"
+                android:layout_marginBottom="12dp"/>
+
+            <EditText
+                android:id="@+id/et_login_senha"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Senha"
+                android:inputType="textPassword"
+                android:background="@android:color/white"
+                android:paddingLeft="12dp"
+                android:layout_marginBottom="20dp"/>
+
+            <Button
+                android:id="@+id/btn_login"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Entrar"
+                android:backgroundTint="#0067AB"/>
+
+            <TextView
+                android:id="@+id/tv_alternar_cadastro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Não tem uma conta? Cadastre-se aqui"
+                android:textColor="#0067AB"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_cadastro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Criar Conta"
+                android:textColor="#0067AB"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_gravity="center"
+                android:layout_marginBottom="24dp"/>
+
+            <EditText android:id="@+id/et_cad_nome" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Nome Completo *" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="textPersonName"/>
+            <EditText android:id="@+id/et_cad_cpf" android:layout_width="match_parent" android:layout_height="50dp" android:hint="CPF (somente números) *" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="number"/>
+            <EditText android:id="@+id/et_cad_email" android:layout_width="match_parent" android:layout_height="50dp" android:hint="E-mail *" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="textEmailAddress"/>
+            <EditText android:id="@+id/et_cad_telefone" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Telefone" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="phone"/>
+            <EditText android:id="@+id/et_cad_orgao" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Órgão / Empresa" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="text"/>
+            <EditText android:id="@+id/et_cad_cargo" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Cargo" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="text"/>
+            <EditText android:id="@+id/et_cad_senha" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Senha (mínimo 6 caracteres) *" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="10dp" android:inputType="textPassword"/>
+            <EditText android:id="@+id/et_cad_senha_conf" android:layout_width="match_parent" android:layout_height="50dp" android:hint="Confirmar Senha *" android:background="@android:color/white" android:paddingLeft="12dp" android:layout_marginBottom="20dp" android:inputType="textPassword"/>
+
+            <Button
+                android:id="@+id/btn_cadastrar"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Finalizar Cadastro"
+                android:backgroundTint="#0067AB"/>
+
+            <TextView
+                android:id="@+id/tv_alternar_login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Já possui cadastro? Faça o Login"
+                android:textColor="#0067AB"
+                android:layout_gravity="center"
+                android:layout_marginTop="16dp"
+                android:textStyle="bold"/>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -1,8 +1,10 @@
 package com.projeto.conveniar_eventos.ui;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,15 +21,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        // Configuração explícita do click da Área do inscrito
+        Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
+        btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
     }
 
     public void navega_tela_menu(View v){
         Intent it = new Intent(this, MenuSelecione.class);
+        startActivity(it);
+    }
+
+    private void navegaAreaInscrito() {
+        SharedPreferences prefs = getSharedPreferences("conveniar_prefs", MODE_PRIVATE);
+        long userId = prefs.getLong("usuario_id", -1);
+
+        Intent it;
+        if (userId != -1) {
+            it = new Intent(this, AreaInscrito.class);
+        } else {
+            it = new Intent(this, CadastroUsuario.class);
+        }
         startActivity(it);
     }
 }

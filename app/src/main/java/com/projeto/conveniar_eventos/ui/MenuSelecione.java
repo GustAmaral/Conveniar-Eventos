@@ -3,7 +3,6 @@ package com.projeto.conveniar_eventos.ui;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,7 +11,6 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -21,16 +19,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.adapters.EventoAdapter;
+import com.projeto.conveniar_eventos.data.MockRepository;
 import com.projeto.conveniar_eventos.models.Evento;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,136 +32,126 @@ import java.util.Locale;
 public class MenuSelecione extends AppCompatActivity {
 
     private EventoAdapter adapter;
-    private List<Evento> listaCompleta = new ArrayList<>();
-    private List<Evento> listaFiltrada = new ArrayList<>();
+    private final List<Evento> listaCompleta = new ArrayList<>();
+    private final List<Evento> listaFiltrada = new ArrayList<>();
 
     private RecyclerView rvEventos;
     private CardView cardLista;
     private LinearLayout containerFiltros;
     private EditText editSearch, editDataFiltro;
-    private Spinner spinnerFundacoes;
+    private RadioGroup rgStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // Deixa o seu XML (activity_menu_selecione) controlar 100% do visual
         setContentView(R.layout.activity_menu_selecione);
 
-        // 1. Vinculação direta dos IDs
-        rvEventos = findViewById(R.id.rv_eventos);
-        cardLista = findViewById(R.id.card_lista_eventos);
+        // 1. Vinculação dos componentes
+        rvEventos        = findViewById(R.id.rv_eventos);
+        cardLista        = findViewById(R.id.card_lista_eventos);
         containerFiltros = findViewById(R.id.container_filtros_extras);
-        editSearch = findViewById(R.id.edit_search);
-        editDataFiltro = findViewById(R.id.edit_data_filtro);
-        spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
-        Button btnFiltros = findViewById(R.id.btn_filtros);
-        RadioGroup rgStatus = findViewById(R.id.rg_status);
+        editSearch       = findViewById(R.id.edit_search);
+        editDataFiltro   = findViewById(R.id.edit_data_filtro);
+        rgStatus         = findViewById(R.id.rg_status);
+        Spinner spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
+        Button btnFiltros        = findViewById(R.id.btn_filtros);
 
-        // 2. Configuração básica da lista
+        // 2. RecyclerView
         rvEventos.setLayoutManager(new LinearLayoutManager(this));
         adapter = new EventoAdapter(listaFiltrada);
         rvEventos.setAdapter(adapter);
 
-        // 3. Spinner padrão (não altera o tamanho definido no seu XML)
+        // 3. Spinner de fundações
+        // TODO: adicionar outras fundações aqui quando a API estiver integrada
         String[] fundacoes = {"Selecione a fundação", "Cientec", "Fundação de Apoio"};
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, fundacoes);
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
+                this, android.R.layout.simple_spinner_item, fundacoes);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerFundacoes.setAdapter(spinnerAdapter);
 
         spinnerFundacoes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 1) carregarDados(); // Ativa apenas para Cientec
-                else cardLista.setVisibility(View.GONE);
+                if (position == 1) {
+                    carregarDados(); // Carrega mock da Cientec
+                } else {
+                    cardLista.setVisibility(View.GONE);
+                    listaCompleta.clear();
+                    listaFiltrada.clear();
+                    adapter.notifyDataSetChanged();
+                }
             }
             @Override public void onNothingSelected(AdapterView<?> parent) {}
         });
 
-        // 4. Lógica de expansão do painel cinza
+        // 4. Botão de filtros (expande/recolhe painel)
         btnFiltros.setOnClickListener(v -> {
-            containerFiltros.setVisibility(containerFiltros.getVisibility() == View.GONE ? View.VISIBLE : View.GONE);
+            boolean visivel = containerFiltros.getVisibility() == View.VISIBLE;
+            containerFiltros.setVisibility(visivel ? View.GONE : View.VISIBLE);
         });
 
-        // 5. Escutadores dos Filtros (Pesquisa e Data)
-        TextWatcher filtroWatcher = new TextWatcher() {
+        // 5. Escutadores para filtro em tempo real
+        TextWatcher watcher = new TextWatcher() {
             @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { aplicarFiltros(); }
             @Override public void afterTextChanged(Editable s) {}
         };
-        editSearch.addTextChangedListener(filtroWatcher);
-        editDataFiltro.addTextChangedListener(filtroWatcher);
+        editSearch.addTextChangedListener(watcher);
+        editDataFiltro.addTextChangedListener(watcher);
         rgStatus.setOnCheckedChangeListener((group, checkedId) -> aplicarFiltros());
     }
 
-    private void aplicarFiltros() {
-        String busca = editSearch.getText().toString().toLowerCase();
-        String dataBuscaStr = editDataFiltro.getText().toString();
-        int selectedId = ((RadioGroup)findViewById(R.id.rg_status)).getCheckedRadioButtonId();
-
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-        listaFiltrada.clear();
-
-        try {
-            Date dataLimite = dataBuscaStr.length() == 10 ? sdf.parse(dataBuscaStr) : null;
-
-            for (Evento e : listaCompleta) {
-                boolean bateNome = e.getCurso().toLowerCase().contains(busca);
-                boolean bateStatus = true;
-                if (selectedId == R.id.rb_oferta) bateStatus = e.getSituacao().equalsIgnoreCase("Em oferta");
-                else if (selectedId == R.id.rb_andamento) bateStatus = e.getSituacao().equalsIgnoreCase("Em andamento");
-
-                boolean bateData = true;
-                if (dataLimite != null) {
-                    Date dataE = sdf.parse(e.getDataInicio());
-                    bateData = dataE != null && (dataE.after(dataLimite) || dataE.equals(dataLimite));
-                }
-
-                if (bateNome && bateStatus && bateData) {
-                    listaFiltrada.add(e);
-                }
-            }
-        } catch (Exception e) { Log.e("LOGICA", "Erro de filtro"); }
-        adapter.notifyDataSetChanged();
+    /**
+     * Carrega os dados do MockRepository.
+     *
+     * TROCA FUTURA: substitua MockRepository.getEventos() pela chamada
+     * à sua ApiRepository quando a autenticação estiver funcionando.
+     */
+    private void carregarDados() {
+        listaCompleta.clear();
+        // Adicione o 'this' dentro dos parênteses:
+        listaCompleta.addAll(MockRepository.getEventos(this));
+        aplicarFiltros();
+        cardLista.setVisibility(View.VISIBLE);
     }
 
-    private void carregarDados() {
-        new Thread(() -> {
+    private void aplicarFiltros() {
+        String busca = editSearch.getText().toString().trim().toLowerCase(Locale.getDefault());
+        String dataBuscaStr = editDataFiltro.getText().toString().trim();
+        int selectedId = rgStatus.getCheckedRadioButtonId();
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+        Date dataLimite = null;
+
+        // Só tenta parsear a data quando o campo estiver completo (10 chars = DD/MM/AAAA)
+        if (dataBuscaStr.length() == 10) {
             try {
-                String urlBase = "https://cientec.conveniar.com.br/eventos/";
-                Document doc = Jsoup.connect(urlBase).userAgent("Mozilla/5.0").timeout(10000).get();
-                Elements linhas = doc.select("#ctl00_ContentPlaceHolder1_ListaCursoUserControl1_gvPrincipal tr");
+                dataLimite = sdf.parse(dataBuscaStr);
+            } catch (ParseException ignored) { }
+        }
 
-                List<Evento> novos = new ArrayList<>();
+        listaFiltrada.clear();
 
-                // Lógica de Datas Variadas (Dia/Mês/Ano)
-                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                Calendar cal = Calendar.getInstance();
-                cal.set(2025, Calendar.AUGUST, 5); // Inicia em Agosto/2025
+        for (Evento e : listaCompleta) {
 
-                for (Element linha : linhas) {
-                    Elements colunas = linha.select("td");
-                    if (colunas.size() >= 3) {
-                        String nome = colunas.get(1).text();
-                        String status = colunas.get(2).text();
-                        String urlFinal = colunas.get(1).select("a").attr("abs:href");
+            // Filtro por nome
+            if (!e.getCurso().toLowerCase(Locale.getDefault()).contains(busca)) continue;
 
-                        // Gera a data e pula 30 dias para cada evento
-                        String dataGerada = sdf.format(cal.getTime());
-                        cal.add(Calendar.DAY_OF_YEAR, 30);
+            // Filtro por status
+            if (selectedId == R.id.rb_oferta && !e.getSituacao().equalsIgnoreCase("Em oferta")) continue;
+            if (selectedId == R.id.rb_andamento && !e.getSituacao().equalsIgnoreCase("Em andamento")) continue;
 
-                        novos.add(new Evento(nome, status, 0, dataGerada, urlFinal));
-                    }
-                }
-
-                runOnUiThread(() -> {
-                    listaCompleta.clear();
-                    listaCompleta.addAll(novos);
-                    aplicarFiltros();
-                    cardLista.setVisibility(View.VISIBLE);
-                });
-            } catch (Exception e) {
-                runOnUiThread(() -> Toast.makeText(this, "Erro de conexão", Toast.LENGTH_SHORT).show());
+            // Filtro por data (exibe eventos a partir da data informada)
+            if (dataLimite != null) {
+                try {
+                    Date dataEvento = sdf.parse(e.getDataInicio());
+                    if (dataEvento == null || dataEvento.before(dataLimite)) continue;
+                } catch (ParseException ignored) { continue; }
             }
-        }).start();
+
+            listaFiltrada.add(e);
+        }
+
+        adapter.notifyDataSetChanged();
     }
 }
