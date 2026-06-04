@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CONVENIAR - Eventos</string>
+    <string-array name="niveis_ti">
+        <item>Iniciante / Básico</item>
+        <item>Intermediário</item>
+        <item>Avançado / Profissional</item>
+    </string-array>
 </resources>
