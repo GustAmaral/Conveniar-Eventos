@@ -1,5 +1,6 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,9 +13,12 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,6 +30,7 @@ import com.projeto.conveniar_eventos.models.Evento;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -46,6 +51,16 @@ public class MenuSelecione extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(
+                        getWindow(),
+                        getWindow().getDecorView()
+                );
+        controller.setAppearanceLightNavigationBars(true);
+
+        // Deixa o seu XML (activity_menu_selecione) controlar 100% do visual
         setContentView(R.layout.activity_menu_selecione);
 
         // 1. Vinculação dos componentes

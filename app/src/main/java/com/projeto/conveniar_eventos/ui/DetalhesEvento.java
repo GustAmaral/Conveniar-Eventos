@@ -1,5 +1,6 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.graphics.Color;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,8 @@ import android.widget.Toast;
 import android.webkit.WebView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.WindowCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
@@ -28,6 +31,15 @@ public class DetalhesEvento extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(
+                        getWindow(),
+                        getWindow().getDecorView()
+                );
+        controller.setAppearanceLightNavigationBars(true);
+
         setContentView(R.layout.activity_detalhes_evento);
 
         // ── Recupera o evento pelo ID recebido via Intent ─────────────

@@ -21,24 +21,25 @@
             android:exported="false" />
 
         <activity
-            android:name=".ui.InscricaoEvento"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.AreaInscrito"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.MenuSelecione"
-            android:exported="false" />
-
-        <activity
-            android:name=".ui.MainActivity"
+            android:name=".ui.SplashActivity"
+            android:theme="@style/Theme.ConveniarEventos.Splash"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-    </application> </manifest>
+        <activity
+            android:name=".ui.InscricaoEvento"
+            android:exported="false"/>
+        <activity
+            android:name=".ui.MenuSelecione"
+            android:exported="false" />
+        <activity
+            android:name=".ui.MainActivity"
+            android:exported="true"/>
+    </application>
+
+</manifest>

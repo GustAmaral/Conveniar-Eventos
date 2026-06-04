@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Tema Base do Aplicativo para Modo Claro (Day) -->
     <style name="Theme.ConveniarEventos" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Cor primária de elementos estruturais e botões -->
+        <item name="android:statusBarColor">#DBE2E6</item>
+        <item name="android:fontFamily">@font/instrument_sans_ttf</item>
+        <item name="fontFamily">@font/instrument_sans_ttf</item>
         <item name="colorPrimary">#0067AB</item>
         <item name="colorPrimaryDark">#004B7D</item>
         <item name="colorAccent">#0067AB</item>
+    </style>
 
-        <!-- Modifica explicitamente a cor roxa da Barra de Status do topo -->
-        <item name="android:statusBarColor">#0067AB</item>
+    <style name="Theme.ConveniarEventos.Splash"
+        parent="Theme.SplashScreen">
 
-        <!-- Mantém os ícones da barra (bateria, wifi, hora) brancos para contrastar com o azul -->
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="windowSplashScreenBackground">#DBE2E6</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/conveniar_icone</item>
+        <item name="postSplashScreenTheme">
+            @style/Theme.ConveniarEventos
+        </item>
 
-        <!-- Cores de fundo e superfícies do padrão do projeto -->
-        <item name="android:windowBackground">#DBE2E6</item>
     </style>
 </resources>

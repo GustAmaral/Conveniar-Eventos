@@ -1,10 +1,11 @@
 package com.projeto.conveniar_eventos.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Base64; // Adicionado
-import android.util.Log;    // Adicionado
+import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -12,15 +13,17 @@ import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.core.view.WindowInsetsControllerCompat;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.api.RetrofitClient; // Ajuste conforme seu pacote
 import com.projeto.conveniar_eventos.api.TokenResponse;   // Ajuste conforme seu pacote
 
-import retrofit2.Call;     // Adicionado
-import retrofit2.Callback; // Adicionado
-import retrofit2.Response; // Adicionado
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,7 +31,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
+        WindowInsetsControllerCompat controller =
+                WindowCompat.getInsetsController(
+                        getWindow(),
+                        getWindow().getDecorView()
+                );
+        controller.setAppearanceLightNavigationBars(true);
+
         setContentView(R.layout.activity_main);
+
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
@@ -36,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Configuração explícita do click da Área do inscrito
-        Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
-        btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
+        //Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
+        //btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
     }
 
     public void navega_tela_menu(View v){
