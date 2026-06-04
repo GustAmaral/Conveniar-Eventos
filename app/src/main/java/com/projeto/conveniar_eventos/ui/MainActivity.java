@@ -3,6 +3,8 @@ package com.projeto.conveniar_eventos.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Base64; // Adicionado
+import android.util.Log;    // Adicionado
 import android.view.View;
 import android.widget.Button;
 
@@ -13,6 +15,12 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.projeto.conveniar_eventos.R;
+import com.projeto.conveniar_eventos.api.RetrofitClient; // Ajuste conforme seu pacote
+import com.projeto.conveniar_eventos.api.TokenResponse;   // Ajuste conforme seu pacote
+
+import retrofit2.Call;     // Adicionado
+import retrofit2.Callback; // Adicionado
+import retrofit2.Response; // Adicionado
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
