@@ -49,8 +49,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Configuração explícita do click da Área do inscrito
-        Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
-        btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
+        //Button btnAreaInscrito = findViewById(R.id.btn_area_inscrito);
+        //btnAreaInscrito.setOnClickListener(v -> navegaAreaInscrito());
     }
 
     public void navega_tela_menu(View v){

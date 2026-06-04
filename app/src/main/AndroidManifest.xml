@@ -30,23 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".ui.DetalhesEvento"
-            android:name=".ui.InscricaoEvento"
-            android:exported="false" />
 
         <activity
-            android:name=".ui.SplashActivity"
-            android:theme="@style/Theme.ConveniarEventos.Splash"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".ui.DetalhesEvento"
-            android:exported="false" />
+            android:name=".ui.InscricaoEvento"
+            android:exported="false"/>
         <activity
             android:name=".ui.MenuSelecione"
             android:exported="false" />
@@ -55,4 +42,4 @@
             android:exported="true"/>
     </application>
 
-    </application> </manifest>
+</manifest>
