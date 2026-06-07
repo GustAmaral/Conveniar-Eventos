@@ -121,6 +121,32 @@ public class MenuSelecione extends AppCompatActivity {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) { aplicarFiltros(); }
             @Override public void afterTextChanged(Editable s) {}
         };
+
+        editDataFiltro.addTextChangedListener(new TextWatcher() {
+            private boolean isUpdating = false;
+
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            @Override public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (isUpdating) return;
+                isUpdating = true;
+
+                String digits = s.toString().replaceAll("[^\\d]", "");
+                StringBuilder formatted = new StringBuilder();
+
+                for (int i = 0; i < digits.length() && i < 8; i++) {
+                    if (i == 2 || i == 4) formatted.append("/");
+                    formatted.append(digits.charAt(i));
+                }
+
+                editDataFiltro.setText(formatted.toString());
+                editDataFiltro.setSelection(formatted.length());
+                isUpdating = false;
+            }
+        });
+
         editSearch.addTextChangedListener(watcher);
         editDataFiltro.addTextChangedListener(watcher);
 

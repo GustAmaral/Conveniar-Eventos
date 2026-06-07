@@ -24,17 +24,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
 
-        // ── Mantém o Design de barras unificadas da branch de front-end ──
-        getWindow().setNavigationBarColor(Color.parseColor("#0B2554"));
-        WindowInsetsControllerCompat controller =
-                WindowCompat.getInsetsController(
-                        getWindow(),
-                        getWindow().getDecorView()
-                );
-        if (controller != null) {
-            controller.setAppearanceLightNavigationBars(true);
-        }
-
         setContentView(R.layout.activity_main);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
