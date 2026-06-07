@@ -69,7 +69,7 @@ public class AreaInscrito extends AppCompatActivity {
             tvVazio.setVisibility(View.GONE);
             lvInscricoes.setVisibility(View.VISIBLE);
 
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, stringsExibicao);
+            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_inscricao, R.id.textViewItem, stringsExibicao);
             lvInscricoes.setAdapter(adapter);
 
             // Ação de clique para redirecionar de volta aos detalhes do evento real

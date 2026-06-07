@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:background="#DBE2E6"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="18dp">
 
     <TextView
         android:id="@+id/tv_boas_vindas"
@@ -37,7 +37,8 @@
         android:id="@+id/lv_inscricoes"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@android:color/white"
+        android:background="@drawable/corner_radius"
+        android:padding="12dp"
         android:divider="#DDD"
         android:dividerHeight="1dp"/>
 </LinearLayout>
