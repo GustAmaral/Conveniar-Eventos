@@ -2,10 +2,7 @@ package com.projeto.conveniar_eventos.models;
 
 /**
  * Modelo de Evento.
- *
- * Campos atuais refletem o que o mock (e futuramente a API) fornece.
- * Quando a API estiver integrada, adicione aqui os campos extras
- * que ela retornar (ex: cargaHoraria, valor, local, etc).
+ * Atualizado para suportar a filtragem e separação por fundações parceiras.
  */
 public class Evento {
 
@@ -29,13 +26,13 @@ public class Evento {
     private final String instrutor;
     private final String descricao;
     private final String tipoEvento;     // usa as constantes acima
-    private final String urlDetalhes;
+    private final String fundacao;       // CORRIGIDO: Substituiu urlDetalhes para mapear a instituição
 
     public Evento(int id, String curso, String situacao, int vagas,
                   String dataInicio, String dataFim, String horario,
                   String local, double valor, int cargaHoraria,
                   String instrutor, String descricao,
-                  String tipoEvento, String urlDetalhes) {
+                  String tipoEvento, String fundacao) {
         this.id           = id;
         this.curso        = curso;
         this.situacao     = situacao;
@@ -49,7 +46,7 @@ public class Evento {
         this.instrutor    = instrutor;
         this.descricao    = descricao;
         this.tipoEvento   = tipoEvento;
-        this.urlDetalhes  = urlDetalhes;
+        this.fundacao     = fundacao;
     }
 
     // ── Getters ──────────────────────────────────────────────────────
@@ -66,7 +63,7 @@ public class Evento {
     public String getInstrutor()    { return instrutor; }
     public String getDescricao()    { return descricao; }
     public String getTipoEvento()   { return tipoEvento; }
-    public String getUrlDetalhes()  { return urlDetalhes; }
+    public String getFundacao()     { return fundacao; } // Adicionado para o MenuSelecione
 
     /** Define vagas (usado pelo MockRepository para sincronizar com o banco). */
     public void setVagas(int vagas) { this.vagas = vagas; }

@@ -20,6 +20,8 @@
             android:name=".ui.CadastroUsuario"
             android:exported="false" />
 
+        <activity android:name=".ui.AreaInscrito" android:exported="false" />
+
         <activity
             android:name=".ui.SplashActivity"
             android:theme="@style/Theme.ConveniarEventos.Splash"

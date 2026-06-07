@@ -5,92 +5,84 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DBE2E6"
+    android:background="@android:color/white"
     tools:context=".ui.MainActivity">
 
-    <!-- CABEÇALHO BRANCO -->
-    <RelativeLayout
-        android:id="@+id/header_layout"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:background="#FFFFFF"
-        android:layout_alignParentTop="true">
-
-        <ImageView
-            android:id="@+id/img_logo_conveniar"
-            android:layout_width="280dp"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:adjustViewBounds="true"
-            android:src="@drawable/conveniar_logo"
-            android:contentDescription="Logo Conveniar" />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/faixaCinza"
-        android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#EBF0F3"
-        android:layout_below="@id/header_layout" />
-
-    <!-- TÍTULO -->
-    <TextView
-        android:id="@+id/txt_titulo"
-        android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/img_logo_conveniar"
+        android:layout_width="260dp"
         android:layout_height="wrap_content"
-        android:layout_below="@id/header_layout"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="32dp"
-        android:text="Conveniar Eventos"
-        android:textColor="#0067AB"
-        android:textSize="32sp"
-        android:textStyle="bold" />
-
-    <!-- BOTÃO: ACESSAR LISTA -->
-    <Button
-        android:id="@+id/btn_lista_eventos"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_below="@id/txt_titulo"
-        android:layout_centerHorizontal="true"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="32dp"
-        android:backgroundTint="#0067AB"
-        android:text="Acessar lista de eventos"
-        android:textColor="#FFFFFF"
-        android:textAllCaps="false"
-        android:textSize="22sp"
-        app:cornerRadius="12dp"
-        android:onClick="navega_tela_menu"/>
-
-    <!-- BOTÃO: ÁREA DO INSCRITO -->
-<!--    <Button-->
-<!--        android:id="@+id/btn_area_inscrito"-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="60dp"-->
-<!--        android:layout_below="@id/btn_lista_eventos"-->
-<!--        android:layout_centerHorizontal="true"-->
-<!--        android:layout_marginStart="32dp"-->
-<!--        android:layout_marginTop="16dp"-->
-<!--        android:layout_marginEnd="32dp"-->
-<!--        android:backgroundTint="#0067AB"-->
-<!--        android:text="Área do inscrito"-->
-<!--        android:textColor="#FFFFFF"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textSize="22sp"-->
-<!--        app:cornerRadius="12dp" />-->
-
-    <ImageView
-        android:id="@+id/img_logo_cientec"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
         android:adjustViewBounds="true"
-        android:src="@drawable/cientec_logo"
-        android:contentDescription="Logo Cientec" />
+        android:contentDescription="Logo Conveniar"
+        android:src="@drawable/conveniar_logo" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_centerInParent="true"
+        android:paddingStart="32dp"
+        android:paddingEnd="32dp">
+
+        <TextView
+            android:id="@+id/txt_titulo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="32dp"
+            android:text="Conveniar Eventos"
+            android:textColor="#0067AB"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/btn_lista_eventos"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="#0067AB"
+            android:text="Acessar lista de eventos"
+            android:textColor="#FFFFFF"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:cornerRadius="50dp"
+            android:onClick="navega_tela_menu"/>
+
+        <Button
+            android:id="@+id/btn_area_inscrito"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:backgroundTint="@android:color/transparent"
+            android:text="Área do inscrito"
+            android:textColor="#0067AB"
+            android:textAllCaps="false"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:strokeColor="#0067AB"
+            app:strokeWidth="2dp"
+            app:cornerRadius="50dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="32dp">
+
+        <ImageView
+            android:id="@+id/img_logo_cientec"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:src="@drawable/cientec_logo"
+            android:contentDescription="Logo Cientec" />
+    </LinearLayout>
 
 </RelativeLayout>
