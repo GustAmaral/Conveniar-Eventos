@@ -15,7 +15,7 @@
         parent="Theme.SplashScreen">
 
         <item name="windowSplashScreenBackground">#DBE2E6</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/conveniar_icone</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/conveniar_icone_peq</item>
         <item name="postSplashScreenTheme">
             @style/Theme.ConveniarEventos
         </item>
