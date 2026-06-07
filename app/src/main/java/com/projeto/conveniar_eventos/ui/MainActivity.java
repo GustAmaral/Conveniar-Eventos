@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         EdgeToEdge.enable(this);
 
         // ── Mantém o Design de barras unificadas da branch de front-end ──
-        getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
+        getWindow().setNavigationBarColor(Color.parseColor("#0B2554"));
         WindowInsetsControllerCompat controller =
                 WindowCompat.getInsetsController(
                         getWindow(),
