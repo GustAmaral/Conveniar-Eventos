@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
@@ -30,7 +29,6 @@ import com.projeto.conveniar_eventos.models.Evento;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -47,6 +45,7 @@ public class MenuSelecione extends AppCompatActivity {
     private EditText editSearch, editDataFiltro;
     private RadioGroup rgStatus;
     private RadioButton rbAndamento, rbOferta;
+    private Spinner spinnerFundacoes; // Escopo alterado para global
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,9 +57,10 @@ public class MenuSelecione extends AppCompatActivity {
                         getWindow(),
                         getWindow().getDecorView()
                 );
-        controller.setAppearanceLightNavigationBars(true);
+        if (controller != null) {
+            controller.setAppearanceLightNavigationBars(true);
+        }
 
-        // Deixa o seu XML (activity_menu_selecione) controlar 100% do visual
         setContentView(R.layout.activity_menu_selecione);
 
         // 1. Vinculação dos componentes
@@ -72,7 +72,7 @@ public class MenuSelecione extends AppCompatActivity {
         rgStatus         = findViewById(R.id.rg_status);
         rbAndamento      = findViewById(R.id.rb_andamento);
         rbOferta         = findViewById(R.id.rb_oferta);
-        Spinner spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
+        spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
         Button btnFiltros        = findViewById(R.id.btn_filtros);
 
         // 2. RecyclerView
@@ -81,7 +81,13 @@ public class MenuSelecione extends AppCompatActivity {
         rvEventos.setAdapter(adapter);
 
         // 3. Spinner de fundações
-        String[] fundacoes = {"Selecione a fundação", "Cientec", "Fundação de Apoio"};
+        // Procure por essa linha no seu MenuSelecione.java e atualize:
+        String[] fundacoes = {
+                "Selecione a fundação",
+                "Cientec",
+                "Funarbe",
+                "Facev"
+        };
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<>(
                 this, android.R.layout.simple_spinner_item, fundacoes);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -90,7 +96,8 @@ public class MenuSelecione extends AppCompatActivity {
         spinnerFundacoes.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position == 1) {
+                if (position > 0) {
+                    // Carrega os dados se houver qualquer instituição válida selecionada
                     carregarDados();
                 } else {
                     cardLista.setVisibility(View.GONE);
@@ -117,7 +124,7 @@ public class MenuSelecione extends AppCompatActivity {
         editSearch.addTextChangedListener(watcher);
         editDataFiltro.addTextChangedListener(watcher);
 
-        // 6. Lógica Customizada: Permitir desclicar nos RadioButtons de Status
+        // 6. Permitir desclicar nos RadioButtons de Status
         View.OnClickListener radioClickListener = new View.OnClickListener() {
             private int ultimoIdMarcado = -1;
 
@@ -152,6 +159,9 @@ public class MenuSelecione extends AppCompatActivity {
         String dataBuscaStr = editDataFiltro.getText().toString().trim();
         int selectedId = rgStatus.getCheckedRadioButtonId();
 
+        // Identifica qual instituição está ativa no Spinner
+        String fundacaoSelecionada = spinnerFundacoes.getSelectedItem().toString();
+
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
         Date dataLimite = null;
 
@@ -164,6 +174,9 @@ public class MenuSelecione extends AppCompatActivity {
         listaFiltrada.clear();
 
         for (Evento e : listaCompleta) {
+
+            // NOVO FILTRO: Restringe os itens à instituição atualmente selecionada
+            if (!e.getFundacao().equalsIgnoreCase(fundacaoSelecionada)) continue;
 
             // Filtro por nome
             if (!e.getCurso().toLowerCase(Locale.getDefault()).contains(busca)) continue;
