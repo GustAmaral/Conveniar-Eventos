@@ -2,6 +2,7 @@ package com.projeto.conveniar_eventos.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Menu;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -14,7 +15,6 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
@@ -33,7 +33,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-public class MenuSelecione extends AppCompatActivity {
+public class MenuSelecione extends BaseActivity {
 
     private EventoAdapter adapter;
     private final List<Evento> listaCompleta = new ArrayList<>();
@@ -62,6 +62,7 @@ public class MenuSelecione extends AppCompatActivity {
         }
 
         setContentView(R.layout.activity_menu_selecione);
+        configurarToolbar("Eventos", false);
 
         // 1. Vinculação dos componentes
         rvEventos        = findViewById(R.id.rv_eventos);
@@ -171,6 +172,16 @@ public class MenuSelecione extends AppCompatActivity {
             rbAndamento.setOnClickListener(radioClickListener);
             rbOferta.setOnClickListener(radioClickListener);
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        long userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE)
+                .getLong("usuario_id", -1);
+        if (userId != -1) {
+            getMenuInflater().inflate(R.menu.menu_com_logout, menu);
+        }
+        return true;
     }
 
     private void carregarDados() {

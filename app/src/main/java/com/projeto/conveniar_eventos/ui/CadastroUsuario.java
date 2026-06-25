@@ -11,8 +11,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
 
@@ -29,7 +27,7 @@ import java.security.NoSuchAlgorithmException;
  * e redireciona para InscricaoEvento (se veio de DetalhesEvento) ou
  * para AreaInscrito (se veio de MainActivity).
  */
-public class CadastroUsuario extends AppCompatActivity {
+public class CadastroUsuario extends BaseActivity {
 
     private static final String PREFS      = "conveniar_prefs";
     private static final String KEY_USER_ID = "usuario_id";
@@ -56,6 +54,8 @@ public class CadastroUsuario extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cadastro_usuario);
+
+        configurarToolbar("Identificação", true);
 
         // ── Se já há sessão ativa, não precisa ficar aqui ─────────────
         SharedPreferences prefs = getSharedPreferences(PREFS, MODE_PRIVATE);

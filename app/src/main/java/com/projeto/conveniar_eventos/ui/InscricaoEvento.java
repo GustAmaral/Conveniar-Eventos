@@ -8,8 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
 import com.projeto.conveniar_eventos.data.MockRepository;
@@ -19,7 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class InscricaoEvento extends AppCompatActivity {
+public class InscricaoEvento extends BaseActivity {
 
     private Evento evento;
     private long userId;
@@ -47,6 +45,8 @@ public class InscricaoEvento extends AppCompatActivity {
             finish();
             return;
         }
+
+        configurarToolbar("Inscrição", true);
 
         // Vinculação
         tvTituloInscricao   = findViewById(R.id.tv_titulo_inscricao);

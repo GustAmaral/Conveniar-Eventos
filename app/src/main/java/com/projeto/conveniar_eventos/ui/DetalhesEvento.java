@@ -10,7 +10,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.webkit.WebView;
 
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
@@ -21,7 +20,7 @@ import com.projeto.conveniar_eventos.models.Evento;
 
 import java.util.List;
 
-public class DetalhesEvento extends AppCompatActivity {
+public class DetalhesEvento extends BaseActivity {
 
     private static final String PREFS = "conveniar_prefs";
     private static final String KEY_USER_ID = "usuario_id";
@@ -54,6 +53,8 @@ public class DetalhesEvento extends AppCompatActivity {
             finish();
             return;
         }
+
+        configurarToolbar(evento.getCurso(), true);
 
         // ── Vincula views ─────────────────────────────────────────────
         TextView tvNome      = findViewById(R.id.tv_valor_nome);

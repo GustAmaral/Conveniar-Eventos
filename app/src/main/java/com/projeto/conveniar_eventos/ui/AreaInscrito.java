@@ -3,11 +3,11 @@ package com.projeto.conveniar_eventos.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
@@ -17,7 +17,7 @@ import com.projeto.conveniar_eventos.models.Evento;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AreaInscrito extends AppCompatActivity {
+public class AreaInscrito extends BaseActivity {
 
     private ArrayList<String> stringsExibicao = new ArrayList<>();
     private ArrayList<Integer> idsEventosInscritos = new ArrayList<>();
@@ -26,6 +26,8 @@ public class AreaInscrito extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_area_inscrito);
+
+        configurarToolbar("Meus Eventos", false);
 
         TextView tvBoasVindas = findViewById(R.id.tv_boas_vindas);
         ListView lvInscricoes = findViewById(R.id.lv_inscricoes);
@@ -80,5 +82,11 @@ public class AreaInscrito extends AppCompatActivity {
                 startActivity(it);
             });
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_com_logout, menu);
+        return true;
     }
 }
