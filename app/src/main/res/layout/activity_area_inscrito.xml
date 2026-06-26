@@ -45,14 +45,12 @@
             android:layout_marginTop="40dp"
             android:visibility="gone"/>
 
-        <ListView
-            android:id="@+id/lv_inscricoes"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_inscricoes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/corner_radius"
-            android:padding="12dp"
-            android:divider="#DDD"
-            android:dividerHeight="1dp"/>
+            android:clipToPadding="false"
+            android:paddingBottom="8dp" />
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

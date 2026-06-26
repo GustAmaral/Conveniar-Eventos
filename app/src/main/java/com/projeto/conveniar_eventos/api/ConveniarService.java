@@ -21,4 +21,14 @@ public interface ConveniarService {
             @Query("pagina") int pagina,
             @Query("limite") int limite
     );
+
+    // TODO: descomentar quando a API estiver disponível
+    // @Multipart
+    // @POST("inscricoes/{id}/documentos")
+    // Call<DocumentoUploadResponse> uploadDocumento(
+    //         @Header("Authorization") String bearerToken,
+    //         @Path("id") long inscricaoId,
+    //         @Part("tipo_documento") RequestBody tipo,
+    //         @Part MultipartBody.Part arquivo
+    // );
 }

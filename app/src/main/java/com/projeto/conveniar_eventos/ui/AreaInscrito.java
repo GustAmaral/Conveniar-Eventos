@@ -5,22 +5,26 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import androidx.work.Data;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkManager;
+
 import com.projeto.conveniar_eventos.R;
+import com.projeto.conveniar_eventos.adapters.InscricaoAdapter;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
 import com.projeto.conveniar_eventos.data.MockRepository;
 import com.projeto.conveniar_eventos.models.Evento;
+import com.projeto.conveniar_eventos.worker.DocumentUploadWorker;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AreaInscrito extends BaseActivity {
-
-    private ArrayList<String> stringsExibicao = new ArrayList<>();
-    private ArrayList<Integer> idsEventosInscritos = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,58 +34,114 @@ public class AreaInscrito extends BaseActivity {
         configurarToolbar("Meus Eventos", false);
 
         TextView tvBoasVindas = findViewById(R.id.tv_boas_vindas);
-        ListView lvInscricoes = findViewById(R.id.lv_inscricoes);
-        TextView tvVazio       = findViewById(R.id.tv_lista_vazia);
+        RecyclerView rvInscricoes = findViewById(R.id.rv_inscricoes);
+        TextView tvVazio = findViewById(R.id.tv_lista_vazia);
 
-        String nome = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getString("usuario_nome", "Usuário");
-        long userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getLong("usuario_id", -1);
+        String nome   = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getString("usuario_nome", "Usuário");
+        long   userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getLong("usuario_id", -1);
 
         tvBoasVindas.setText("Painel de: " + nome);
 
-        DatabaseHelper db = DatabaseHelper.getInstance(this);
-        Cursor c = db.getInscricoesUsuario(userId);
+        List<InscricaoAdapter.ItemInscricao> items = carregarInscricoes(userId);
 
-        // Carrega os eventos mockados para fazer a busca do nome em memória
-        List<Evento> todosEventos = MockRepository.getEventos(this);
-
-        if (c != null) {
-            while (c.moveToNext()) {
-                int evId = c.getInt(0);
-                String data = c.getString(1);
-
-                // Busca o objeto Evento real para extrair o nome inteligível do curso
-                String nomeCurso = "Curso Desconhecido (ID: " + evId + ")";
-                for (Evento e : todosEventos) {
-                    if (e.getId() == evId) {
-                        nomeCurso = e.getCurso();
-                        break;
-                    }
-                }
-
-                stringsExibicao.add(nomeCurso + "\nInscrito em: " + data);
-                idsEventosInscritos.add(evId); // Mantém o ID guardado na mesma ordem
-            }
-            c.close();
-        }
-
-        if (stringsExibicao.isEmpty()) {
+        if (items.isEmpty()) {
             tvVazio.setVisibility(View.VISIBLE);
-            lvInscricoes.setVisibility(View.GONE);
+            rvInscricoes.setVisibility(View.GONE);
         } else {
             tvVazio.setVisibility(View.GONE);
-            lvInscricoes.setVisibility(View.VISIBLE);
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<>(this, R.layout.item_inscricao, R.id.textViewItem, stringsExibicao);
-            lvInscricoes.setAdapter(adapter);
-
-            // Ação de clique para redirecionar de volta aos detalhes do evento real
-            lvInscricoes.setOnItemClickListener((parent, view, position, id) -> {
-                int eventoIdSelecionado = idsEventosInscritos.get(position);
-                Intent it = new Intent(AreaInscrito.this, DetalhesEvento.class);
-                it.putExtra("EVENTO_ID", eventoIdSelecionado); // Repassa o ID mapeado
+            rvInscricoes.setVisibility(View.VISIBLE);
+            rvInscricoes.setLayoutManager(new LinearLayoutManager(this));
+            rvInscricoes.setAdapter(new InscricaoAdapter(items, eventoId -> {
+                Intent it = new Intent(this, DetalhesEvento.class);
+                it.putExtra("EVENTO_ID", eventoId);
                 startActivity(it);
-            });
+            }));
         }
+    }
+
+    private List<InscricaoAdapter.ItemInscricao> carregarInscricoes(long userId) {
+        List<InscricaoAdapter.ItemInscricao> items = new ArrayList<>();
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
+        List<Evento> todosEventos = MockRepository.getEventos(this);
+
+        Cursor c = db.getInscricoesUsuario(userId);
+        if (c == null) return items;
+
+        while (c.moveToNext()) {
+            int    evId = c.getInt(0);
+            String data = c.getString(1);
+
+            String nomeCurso = "Curso desconhecido (ID: " + evId + ")";
+            for (Evento e : todosEventos) {
+                if (e.getId() == evId) { nomeCurso = e.getCurso(); break; }
+            }
+
+            long inscricaoId   = db.getInscricaoId(userId, evId);
+            int  total         = db.contarDocumentosDaInscricao(inscricaoId);
+            int  enviados      = db.contarDocumentosPorStatus(inscricaoId, DatabaseHelper.DOC_STATUS_ENVIADO);
+            int  rejeitados    = db.contarDocumentosPorStatus(inscricaoId, DatabaseHelper.DOC_STATUS_REJEITADO);
+
+            items.add(new InscricaoAdapter.ItemInscricao(evId, nomeCurso, data, total, enviados, rejeitados));
+        }
+        c.close();
+        return items;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        reenviarRejeitados();
+    }
+
+    /**
+     * Ao voltar para a tela, re-agenda o worker para quaisquer inscrições que
+     * ainda tenham documentos rejeitados, permitindo reenvio sem refazer a inscrição.
+     */
+    private void reenviarRejeitados() {
+        long userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getLong("usuario_id", -1);
+        if (userId < 0) return;
+
+        DatabaseHelper db = DatabaseHelper.getInstance(this);
+        Cursor c = db.getInscricoesUsuario(userId);
+        if (c == null) return;
+
+        while (c.moveToNext()) {
+            int  evId        = c.getInt(0);
+            long inscricaoId = db.getInscricaoId(userId, evId);
+            int  rejeitados  = db.contarDocumentosPorStatus(inscricaoId, DatabaseHelper.DOC_STATUS_REJEITADO);
+
+            if (rejeitados > 0) {
+                // Marca os rejeitados como pendentes antes de re-agendar
+                remarcarRejeitadosComoPendentes(db, inscricaoId);
+                agendarReenvio(inscricaoId);
+            }
+        }
+        c.close();
+    }
+
+    private void remarcarRejeitadosComoPendentes(DatabaseHelper db, long inscricaoId) {
+        try (Cursor docCursor = db.getDocumentosDaInscricao(inscricaoId)) {
+            int colId     = docCursor.getColumnIndexOrThrow(DatabaseHelper.COL_DOC_ID);
+            int colStatus = docCursor.getColumnIndexOrThrow(DatabaseHelper.COL_DOC_STATUS);
+            while (docCursor.moveToNext()) {
+                if (DatabaseHelper.DOC_STATUS_REJEITADO.equals(docCursor.getString(colStatus))) {
+                    db.atualizarStatusDocumento(docCursor.getLong(colId), DatabaseHelper.DOC_STATUS_PENDENTE);
+                }
+            }
+        }
+    }
+
+    private void agendarReenvio(long inscricaoId) {
+        Data inputData = new Data.Builder()
+                .putLong(DocumentUploadWorker.KEY_INSCRICAO_ID, inscricaoId)
+                .build();
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(DocumentUploadWorker.class)
+                .setInputData(inputData)
+                .addTag("reenvio_documentos_" + inscricaoId)
+                .build();
+
+        WorkManager.getInstance(this).enqueue(request);
     }
 
     @Override

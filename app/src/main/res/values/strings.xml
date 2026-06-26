@@ -5,4 +5,11 @@
         <item>Intermediário</item>
         <item>Avançado / Profissional</item>
     </string-array>
+
+    <string name="doc_label_cpf">CPF (frente e verso)</string>
+    <string name="doc_label_diploma">Diploma ou Declaração de Conclusão</string>
+    <string name="doc_label_oab">Carteira OAB</string>
+    <string name="doc_label_comprovante_vinculo">Comprovante de Vínculo Institucional</string>
+    <string name="doc_label_curriculo">Currículo (PDF)</string>
+    <string name="doc_label_desconhecido">Documento</string>
 </resources>
