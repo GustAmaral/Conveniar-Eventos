@@ -134,7 +134,7 @@ public class DetalhesEvento extends BaseActivity {
                 Toast.makeText(this, "Você já está inscrito neste evento!", Toast.LENGTH_LONG).show();
                 return;
             }
-            Intent it = new Intent(this, InscricaoEvento.class);
+            Intent it = new Intent(this, TermosAceiteEvento.class);
             it.putExtra("EVENTO_ID", evento.getId());
             startActivity(it);
         }

@@ -1,5 +1,6 @@
 package com.projeto.conveniar_eventos.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,6 +33,7 @@ public class InscricaoEvento extends BaseActivity {
 
     private Evento evento;
     private long userId;
+    private String aceiteTimestamp;
 
     private TextView tvTituloInscricao;
     private EditText etMatricula, etLinkedin, etAreaAtuacao, etOab, etMotivacao;
@@ -54,6 +56,7 @@ public class InscricaoEvento extends BaseActivity {
 
         userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE).getLong("usuario_id", -1);
         int eventoId = getIntent().getIntExtra("EVENTO_ID", -1);
+        aceiteTimestamp = getIntent().getStringExtra("ACEITE_TIMESTAMP");
 
         for (Evento e : MockRepository.getEventos(this)) {
             if (e.getId() == eventoId) { evento = e; break; }
@@ -61,6 +64,14 @@ public class InscricaoEvento extends BaseActivity {
 
         if (evento == null || userId == -1) {
             Toast.makeText(this, "Erro ao carregar dados do formulário.", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        if (aceiteTimestamp == null || aceiteTimestamp.isEmpty()) {
+            Intent it = new Intent(this, TermosAceiteEvento.class);
+            it.putExtra("EVENTO_ID", eventoId);
+            startActivity(it);
             finish();
             return;
         }
@@ -203,7 +214,7 @@ public class InscricaoEvento extends BaseActivity {
 
         boolean sucesso = db.inscrever(userId, evento.getId(), dataHoje, matricula,
                 evento.getTipoEvento().equals(Evento.TIPO_TI) ? nivelTi : "",
-                linkedin, area, oab, motivacao);
+                linkedin, area, oab, motivacao, aceiteTimestamp);
 
         if (!sucesso) {
             Toast.makeText(this, "Erro ao processar inscrição. Verifique as vagas.", Toast.LENGTH_SHORT).show();

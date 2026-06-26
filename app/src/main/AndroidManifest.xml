@@ -42,6 +42,10 @@
             android:name=".ui.InscricaoEvento"
             android:exported="false"/>
         <activity
+            android:name=".ui.TermosAceiteEvento"
+            android:exported="false"
+            android:parentActivityName=".ui.DetalhesEvento" />
+        <activity
             android:name=".ui.MenuSelecione"
             android:exported="false" />
         <activity
