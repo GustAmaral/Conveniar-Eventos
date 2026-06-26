@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "conveniar.db";
-    private static final int    DB_VERSION = 2;
+    private static final int    DB_VERSION = 3;
 
     public static final String TB_USUARIOS           = "usuarios";
     public static final String COL_USR_ID            = "id";
@@ -31,7 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_INS_LINKEDIN      = "linkedin";
     public static final String COL_INS_AREA_ATUACAO  = "area_atuacao";
     public static final String COL_INS_OAB           = "oab";
-    public static final String COL_INS_MOTIVACAO     = "motivacao";
+    public static final String COL_INS_MOTIVACAO      = "motivacao";
+    public static final String COL_INS_ACEITE_TERMOS  = "aceite_termos";
 
     public static final String TB_VAGAS              = "vagas_controle";
     public static final String COL_VAG_EVENTO_ID     = "evento_id";
@@ -84,8 +85,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_INS_NIVEL_TI    + " TEXT, " +
                 COL_INS_LINKEDIN    + " TEXT, " +
                 COL_INS_AREA_ATUACAO+ " TEXT, " +
-                COL_INS_OAB         + " TEXT, " +
-                COL_INS_MOTIVACAO   + " TEXT, " +
+                COL_INS_OAB          + " TEXT, " +
+                COL_INS_MOTIVACAO    + " TEXT, " +
+                COL_INS_ACEITE_TERMOS+ " TEXT, " +
                 "FOREIGN KEY(" + COL_INS_USUARIO_ID + ") REFERENCES " + TB_USUARIOS + "(" + COL_USR_ID + "), " +
                 "UNIQUE(" + COL_INS_USUARIO_ID + ", " + COL_INS_EVENTO_ID + ")" +
                 ");");
@@ -115,6 +117,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion < 2) {
             criarTabelaDocumentos(db);
+        }
+        if (oldVersion < 3) {
+            db.execSQL("ALTER TABLE " + TB_INSCRICOES +
+                    " ADD COLUMN " + COL_INS_ACEITE_TERMOS + " TEXT");
         }
     }
 
@@ -161,7 +167,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public boolean inscrever(long usuarioId, int eventoId, String dataHoje,
                              String matricula, String nivelTi, String linkedin,
-                             String areaAtuacao, String oab, String motivacao) {
+                             String areaAtuacao, String oab, String motivacao,
+                             String aceiteTermos) {
         SQLiteDatabase db = getWritableDatabase();
         db.beginTransaction();
         try {
@@ -169,15 +176,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             if (vagas <= 0) return false;
 
             ContentValues cv = new ContentValues();
-            cv.put(COL_INS_USUARIO_ID,   usuarioId);
-            cv.put(COL_INS_EVENTO_ID,    eventoId);
-            cv.put(COL_INS_DATA,         dataHoje);
-            cv.put(COL_INS_MATRICULA,    matricula);
-            cv.put(COL_INS_NIVEL_TI,     nivelTi);
-            cv.put(COL_INS_LINKEDIN,     linkedin);
-            cv.put(COL_INS_AREA_ATUACAO, areaAtuacao);
-            cv.put(COL_INS_OAB,          oab);
-            cv.put(COL_INS_MOTIVACAO,    motivacao);
+            cv.put(COL_INS_USUARIO_ID,    usuarioId);
+            cv.put(COL_INS_EVENTO_ID,     eventoId);
+            cv.put(COL_INS_DATA,          dataHoje);
+            cv.put(COL_INS_MATRICULA,     matricula);
+            cv.put(COL_INS_NIVEL_TI,      nivelTi);
+            cv.put(COL_INS_LINKEDIN,      linkedin);
+            cv.put(COL_INS_AREA_ATUACAO,  areaAtuacao);
+            cv.put(COL_INS_OAB,           oab);
+            cv.put(COL_INS_MOTIVACAO,     motivacao);
+            cv.put(COL_INS_ACEITE_TERMOS, aceiteTermos);
             long insId = db.insert(TB_INSCRICOES, null, cv);
             if (insId < 0) return false;
 
@@ -298,5 +306,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean todos = c.getCount() == 0;
         c.close();
         return todos;
+    }
+
+    public String getAceiteTermos(long inscricaoId) {
+        Cursor c = getReadableDatabase().query(
+                TB_INSCRICOES, new String[]{COL_INS_ACEITE_TERMOS},
+                COL_INS_ID + "=?", new String[]{String.valueOf(inscricaoId)},
+                null, null, null);
+        String aceite = null;
+        if (c.moveToFirst()) aceite = c.getString(0);
+        c.close();
+        return aceite;
     }
 }

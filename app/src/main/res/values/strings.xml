@@ -12,4 +12,9 @@
     <string name="doc_label_comprovante_vinculo">Comprovante de Vínculo Institucional</string>
     <string name="doc_label_curriculo">Currículo (PDF)</string>
     <string name="doc_label_desconhecido">Documento</string>
+
+    <string name="termos_toolbar_titulo">Termos de Aceite</string>
+    <string name="termos_checkbox_label">Li e aceito os termos e condições de participação</string>
+    <string name="termos_btn_continuar">Continuar para Inscrição</string>
+    <string name="termos_aviso_leia">Role até o fim para aceitar os termos</string>
 </resources>
