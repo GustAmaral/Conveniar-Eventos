@@ -2,7 +2,6 @@ package com.projeto.conveniar_eventos.ui;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Menu;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -20,6 +19,8 @@ import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.adapters.EventoAdapter;
@@ -75,6 +76,9 @@ public class MenuSelecione extends BaseActivity {
         rbOferta         = findViewById(R.id.rb_oferta);
         spinnerFundacoes = findViewById(R.id.spinner_fundacoes);
         Button btnFiltros        = findViewById(R.id.btn_filtros);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        configurarBottomNav(bottomNav, R.id.nav_eventos);
 
         // 2. RecyclerView
         rvEventos.setLayoutManager(new LinearLayoutManager(this));
@@ -172,16 +176,6 @@ public class MenuSelecione extends BaseActivity {
             rbAndamento.setOnClickListener(radioClickListener);
             rbOferta.setOnClickListener(radioClickListener);
         }
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        long userId = getSharedPreferences("conveniar_prefs", MODE_PRIVATE)
-                .getLong("usuario_id", -1);
-        if (userId != -1) {
-            getMenuInflater().inflate(R.menu.menu_com_logout, menu);
-        }
-        return true;
     }
 
     private void carregarDados() {

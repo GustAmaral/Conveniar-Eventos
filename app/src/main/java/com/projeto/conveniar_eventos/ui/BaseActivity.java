@@ -7,6 +7,7 @@ import android.view.MenuItem;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.projeto.conveniar_eventos.R;
 
 public abstract class BaseActivity extends AppCompatActivity {
@@ -25,6 +26,46 @@ public abstract class BaseActivity extends AppCompatActivity {
             getSupportActionBar().setTitle(titulo);
             getSupportActionBar().setDisplayHomeAsUpEnabled(exibirBotaoVoltar);
         }
+    }
+
+    protected void configurarBottomNav(BottomNavigationView bottomNav, int itemSelecionado) {
+        bottomNav.setSelectedItemId(itemSelecionado);
+
+        bottomNav.setOnItemSelectedListener(item -> {
+            int id = item.getItemId();
+
+            if (id == itemSelecionado) return false;
+
+            if (id == R.id.nav_home) {
+                Intent it = new Intent(this, MainActivity.class);
+                it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(it);
+                return false;
+            }
+
+            if (id == R.id.nav_eventos) {
+                Intent it = new Intent(this, MenuSelecione.class);
+                it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(it);
+                return false;
+            }
+
+            if (id == R.id.nav_inscrito) {
+                long userId = getSharedPreferences(PREFS, MODE_PRIVATE)
+                        .getLong(KEY_USER_ID, -1);
+                Intent it;
+                if (userId != -1) {
+                    it = new Intent(this, AreaInscrito.class);
+                } else {
+                    it = new Intent(this, CadastroUsuario.class);
+                }
+                it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(it);
+                return false;
+            }
+
+            return false;
+        });
     }
 
     protected void realizarLogout() {
@@ -46,11 +87,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (id == android.R.id.home) {
             onBackPressed();
-            return true;
-        }
-
-        if (id == R.id.menu_logout) {
-            realizarLogout();
             return true;
         }
 
