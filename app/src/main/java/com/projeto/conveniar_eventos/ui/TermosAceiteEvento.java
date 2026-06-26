@@ -106,21 +106,41 @@ public class TermosAceiteEvento extends BaseActivity {
                 "<meta name='viewport' content='width=device-width, initial-scale=1'>" +
                 "<style>" +
                 "body{font-family:sans-serif;padding:14px;line-height:1.6;color:#333;background:#fff;}" +
-                "h2{color:" + cor + ";font-size:17px;border-bottom:1px solid #ddd;padding-bottom:6px;margin-top:18px;}" +
-                "p,li{font-size:14px;}" +
-                "ul{padding-left:18px;}" +
-                "li{margin-bottom:6px;}" +
+                "h1{color:" + cor + ";font-size:18px;border-bottom:2px solid #ddd;padding-bottom:8px;margin-top:0;}" +
+                "h2{color:" + cor + ";font-size:15px;border-bottom:1px solid #eee;padding-bottom:4px;margin-top:20px;}" +
+                "p{font-size:14px;margin-bottom:10px;}" +
                 "</style></head><body>" +
-                "<h2>Termos e Condições de Participação</h2>" +
-                "<p>Ao se inscrever em <b>" + evento.getCurso() + "</b>, você declara estar ciente e de acordo com as seguintes condições:</p>" +
-                "<h2>Regras de Inscrição</h2>" +
-                "<ul>" +
-                "<li>A inscrição deve ser confirmada mediante pagamento do boleto em até 3 dias úteis.</li>" +
-                "<li>O certificado é emitido para participantes com mínimo de 75% de presença.</li>" +
-                "<li>O material didático é enviado por e-mail 24h antes do início.</li>" +
-                "<li>Cancelamentos solicitados com menos de 48h não geram reembolso.</li>" +
-                "</ul>" +
-                "<p style='font-size:12px;color:#999;margin-top:24px;'>Para mais informações, acesse o portal da fundação ou entre em contato com o suporte.</p>" +
+
+                "<h1>Termo de Aceite e Condições de Participação</h1>" +
+                "<p>Ao prosseguir com a inscrição, o participante declara ter lido, compreendido e aceitado os termos e condições descritos neste documento, bem como as informações específicas disponibilizadas na página do evento ou curso.</p>" +
+
+                "<h2>1. Inscrição</h2>" +
+                "<p>A inscrição somente será considerada válida após o preenchimento das informações solicitadas e, quando aplicável, a confirmação do pagamento ou o atendimento aos critérios estabelecidos pela organização do evento ou curso.</p>" +
+                "<p>Cada evento ou curso poderá possuir regras específicas relacionadas a prazos, vagas, documentação necessária, critérios de participação e demais requisitos, sendo responsabilidade do participante consultá-las antes de concluir sua inscrição.</p>" +
+
+                "<h2>2. Pagamentos e Cancelamentos</h2>" +
+                "<p>Quando houver cobrança de taxa de inscrição, os valores, formas de pagamento, prazos, políticas de reembolso e condições para cancelamento serão definidos exclusivamente pela organização do evento ou curso e informados em sua página de apresentação.</p>" +
+                "<p>Ao realizar a inscrição, o participante declara estar ciente dessas condições.</p>" +
+
+                "<h2>3. Participação</h2>" +
+                "<p>O participante compromete-se a fornecer informações verdadeiras e atualizadas durante o processo de inscrição.</p>" +
+                "<p>A organização poderá cancelar ou indeferir inscrições que apresentem informações incorretas, inconsistentes ou que não atendam aos critérios definidos para o evento ou curso.</p>" +
+
+                "<h2>4. Certificados</h2>" +
+                "<p>Quando previstos pela organização, os certificados de participação ou conclusão serão emitidos conforme os critérios estabelecidos para cada evento ou curso, podendo incluir requisitos como presença mínima, frequência, confirmação de participação, realização de atividades avaliativas ou outras condições previamente divulgadas.</p>" +
+
+                "<h2>5. Tratamento de Dados</h2>" +
+                "<p>Os dados pessoais informados durante a inscrição serão utilizados exclusivamente para fins relacionados à organização, administração e comunicação do evento ou curso, respeitando a legislação vigente de proteção de dados.</p>" +
+
+                "<h2>6. Alterações e Cancelamento</h2>" +
+                "<p>A organização poderá, por motivos técnicos, administrativos ou de força maior, alterar datas, horários, formato, local ou cancelar o evento ou curso, comprometendo-se a comunicar os participantes pelos meios de contato informados durante a inscrição.</p>" +
+
+                "<h2>7. Responsabilidades</h2>" +
+                "<p>O aplicativo atua como plataforma de gerenciamento de inscrições, sendo a organização de cada evento ou curso responsável pelas informações divulgadas, critérios de participação, programação, emissão de certificados, cobrança de taxas e demais procedimentos relacionados à atividade.</p>" +
+
+                "<h2>8. Aceite</h2>" +
+                "<p>Ao selecionar a opção de aceite e concluir sua inscrição, o participante confirma que leu este Termo de Aceite, concorda com suas disposições e reconhece que também está sujeito às regras específicas descritas na página do evento ou curso escolhido.</p>" +
+
                 "</body></html>";
     }
 }
