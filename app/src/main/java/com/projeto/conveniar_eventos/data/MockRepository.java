@@ -4,8 +4,6 @@ import android.content.Context;
 import com.projeto.conveniar_eventos.models.Evento;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -14,20 +12,10 @@ public class MockRepository {
 
     private static List<Evento> cache = null;
 
-    // ── Listas de documentos por tipo de evento ──────────────────────
-    private static final List<String> DOCS_GESTAO      = Arrays.asList(Evento.DOC_CPF, Evento.DOC_COMPROVANTE_VINCULO);
-    private static final List<String> DOCS_TI          = Arrays.asList(Evento.DOC_CPF, Evento.DOC_CURRICULO);
-    private static final List<String> DOCS_JURIDICO    = Arrays.asList(Evento.DOC_CPF, Evento.DOC_OAB, Evento.DOC_DIPLOMA);
-    private static final List<String> DOCS_COMUNICACAO = Arrays.asList(Evento.DOC_CPF);
-
+    // Delega para Evento.fromApi() quando vier da API.
+    // Para o mock local, usa o mesmo mapa centralizado em Evento via helper abaixo.
     private static List<String> docs(String tipoEvento) {
-        switch (tipoEvento) {
-            case Evento.TIPO_GESTAO:      return DOCS_GESTAO;
-            case Evento.TIPO_TI:          return DOCS_TI;
-            case Evento.TIPO_JURIDICO:    return DOCS_JURIDICO;
-            case Evento.TIPO_COMUNICACAO: return DOCS_COMUNICACAO;
-            default:                      return Collections.emptyList();
-        }
+        return Evento.docsPorTipo(tipoEvento);
     }
 
     public static List<Evento> getEventos(Context ctx) {

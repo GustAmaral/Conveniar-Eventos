@@ -10,6 +10,10 @@ android {
         }
     }
 
+    buildFeatures {
+        buildConfig = true
+    }
+
     defaultConfig {
         applicationId = "com.projeto.conveniar_eventos"
         minSdk = 24
@@ -18,6 +22,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("boolean", "USE_MOCK_API", "true")
+        buildConfigField("String",  "API_KEY",      "\"SUA_API_KEY_AQUI\"")
     }
 
     buildTypes {
