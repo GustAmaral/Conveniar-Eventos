@@ -1,44 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DBE2E6"
-    android:orientation="vertical"
-    android:padding="18dp">
+    android:background="#DBE2E6">
 
-    <TextView
-        android:id="@+id/tv_boas_vindas"
+    <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Painel do Inscrito"
-        android:textColor="#0067AB"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="16dp"/>
+        android:layout_height="wrap_content">
+        <include layout="@layout/toolbar_padrao" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Suas inscrições ativas neste dispositivo:"
-        android:textSize="14sp"
-        android:layout_marginBottom="12dp"/>
-
-    <TextView
-        android:id="@+id/tv_lista_vazia"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Você ainda não está inscrito em nenhum evento."
-        android:textColor="#777"
-        android:gravity="center"
-        android:layout_marginTop="40dp"
-        android:visibility="gone"/>
-
-    <ListView
-        android:id="@+id/lv_inscricoes"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/corner_radius"
-        android:padding="12dp"
-        android:divider="#DDD"
-        android:dividerHeight="1dp"/>
-</LinearLayout>
+        android:orientation="vertical"
+        android:padding="18dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <TextView
+            android:id="@+id/tv_boas_vindas"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Painel do Inscrito"
+            android:textColor="#0067AB"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Suas inscrições ativas neste dispositivo:"
+            android:textSize="14sp"
+            android:layout_marginBottom="12dp"/>
+
+        <TextView
+            android:id="@+id/tv_lista_vazia"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Você ainda não está inscrito em nenhum evento."
+            android:textColor="#777"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:visibility="gone"/>
+
+        <ListView
+            android:id="@+id/lv_inscricoes"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/corner_radius"
+            android:padding="12dp"
+            android:divider="#DDD"
+            android:dividerHeight="1dp"/>
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
