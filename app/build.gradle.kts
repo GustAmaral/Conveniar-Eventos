@@ -55,4 +55,6 @@ dependencies {
     annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
 
     implementation("androidx.core:core-splashscreen:1.0.1")
+    implementation(libs.work.runtime)
+    implementation(libs.recyclerview)
 }

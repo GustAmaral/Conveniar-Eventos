@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME    = "conveniar.db";
-    private static final int    DB_VERSION = 1;
+    private static final int    DB_VERSION = 2;
 
     public static final String TB_USUARIOS           = "usuarios";
     public static final String COL_USR_ID            = "id";
@@ -36,6 +36,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String TB_VAGAS              = "vagas_controle";
     public static final String COL_VAG_EVENTO_ID     = "evento_id";
     public static final String COL_VAG_VAGAS         = "vagas";
+
+    public static final String TB_DOCUMENTOS         = "documentos";
+    public static final String COL_DOC_ID            = "id";
+    public static final String COL_DOC_INSCRICAO_ID  = "inscricao_id";
+    public static final String COL_DOC_TIPO          = "tipo_documento";
+    public static final String COL_DOC_NOME_ARQUIVO  = "nome_arquivo";
+    public static final String COL_DOC_CAMINHO_LOCAL = "caminho_local";
+    public static final String COL_DOC_STATUS        = "status";
+    public static final String COL_DOC_DATA_UPLOAD   = "data_upload";
+
+    public static final String DOC_STATUS_PENDENTE  = "PENDENTE";
+    public static final String DOC_STATUS_ENVIADO   = "ENVIADO";
+    public static final String DOC_STATUS_REJEITADO = "REJEITADO";
 
     private static DatabaseHelper instance;
 
@@ -81,14 +94,28 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_VAG_EVENTO_ID + " INTEGER PRIMARY KEY, " +
                 COL_VAG_VAGAS     + " INTEGER NOT NULL" +
                 ");");
+
+        criarTabelaDocumentos(db);
+    }
+
+    private void criarTabelaDocumentos(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS " + TB_DOCUMENTOS + " (" +
+                COL_DOC_ID            + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                COL_DOC_INSCRICAO_ID  + " INTEGER NOT NULL, " +
+                COL_DOC_TIPO          + " TEXT NOT NULL, " +
+                COL_DOC_NOME_ARQUIVO  + " TEXT, " +
+                COL_DOC_CAMINHO_LOCAL + " TEXT, " +
+                COL_DOC_STATUS        + " TEXT NOT NULL DEFAULT '" + DOC_STATUS_PENDENTE + "', " +
+                COL_DOC_DATA_UPLOAD   + " TEXT, " +
+                "FOREIGN KEY(" + COL_DOC_INSCRICAO_ID + ") REFERENCES " + TB_INSCRICOES + "(" + COL_INS_ID + ")" +
+                ");");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TB_INSCRICOES);
-        db.execSQL("DROP TABLE IF EXISTS " + TB_USUARIOS);
-        db.execSQL("DROP TABLE IF EXISTS " + TB_VAGAS);
-        onCreate(db);
+        if (oldVersion < 2) {
+            criarTabelaDocumentos(db);
+        }
     }
 
     public long cadastrarUsuario(String nome, String cpf, String email, String telefone, String orgao, String cargo, String senhaHash) {
@@ -201,5 +228,75 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 TB_INSCRICOES, new String[]{COL_INS_EVENTO_ID, COL_INS_DATA},
                 COL_INS_USUARIO_ID + "=?", new String[]{String.valueOf(usuarioId)},
                 null, null, null);
+    }
+
+    public long getInscricaoId(long usuarioId, int eventoId) {
+        Cursor c = getReadableDatabase().query(
+                TB_INSCRICOES, new String[]{COL_INS_ID},
+                COL_INS_USUARIO_ID + "=? AND " + COL_INS_EVENTO_ID + "=?",
+                new String[]{String.valueOf(usuarioId), String.valueOf(eventoId)},
+                null, null, null);
+        long id = -1;
+        if (c.moveToFirst()) id = c.getLong(0);
+        c.close();
+        return id;
+    }
+
+    public long salvarDocumento(long inscricaoId, String tipo, String nomeArquivo, String caminhoLocal) {
+        ContentValues cv = new ContentValues();
+        cv.put(COL_DOC_INSCRICAO_ID,  inscricaoId);
+        cv.put(COL_DOC_TIPO,          tipo);
+        cv.put(COL_DOC_NOME_ARQUIVO,  nomeArquivo);
+        cv.put(COL_DOC_CAMINHO_LOCAL, caminhoLocal);
+        cv.put(COL_DOC_STATUS,        DOC_STATUS_PENDENTE);
+        return getWritableDatabase().insert(TB_DOCUMENTOS, null, cv);
+    }
+
+    public Cursor getDocumentosDaInscricao(long inscricaoId) {
+        return getReadableDatabase().query(
+                TB_DOCUMENTOS, null,
+                COL_DOC_INSCRICAO_ID + "=?", new String[]{String.valueOf(inscricaoId)},
+                null, null, null);
+    }
+
+    public boolean atualizarStatusDocumento(long documentoId, String novoStatus) {
+        ContentValues cv = new ContentValues();
+        cv.put(COL_DOC_STATUS, novoStatus);
+        return getWritableDatabase().update(
+                TB_DOCUMENTOS, cv,
+                COL_DOC_ID + "=?", new String[]{String.valueOf(documentoId)}) > 0;
+    }
+
+    public int contarDocumentosPorStatus(long inscricaoId, String status) {
+        Cursor c = getReadableDatabase().query(
+                TB_DOCUMENTOS, new String[]{COL_DOC_ID},
+                COL_DOC_INSCRICAO_ID + "=? AND " + COL_DOC_STATUS + "=?",
+                new String[]{String.valueOf(inscricaoId), status},
+                null, null, null);
+        int total = c.getCount();
+        c.close();
+        return total;
+    }
+
+    public int contarDocumentosDaInscricao(long inscricaoId) {
+        Cursor c = getReadableDatabase().query(
+                TB_DOCUMENTOS, new String[]{COL_DOC_ID},
+                COL_DOC_INSCRICAO_ID + "=?",
+                new String[]{String.valueOf(inscricaoId)},
+                null, null, null);
+        int total = c.getCount();
+        c.close();
+        return total;
+    }
+
+    public boolean todosDocumentosEnviados(long inscricaoId) {
+        Cursor c = getReadableDatabase().query(
+                TB_DOCUMENTOS, new String[]{COL_DOC_ID},
+                COL_DOC_INSCRICAO_ID + "=? AND " + COL_DOC_STATUS + " != ?",
+                new String[]{String.valueOf(inscricaoId), DOC_STATUS_ENVIADO},
+                null, null, null);
+        boolean todos = c.getCount() == 0;
+        c.close();
+        return todos;
     }
 }
