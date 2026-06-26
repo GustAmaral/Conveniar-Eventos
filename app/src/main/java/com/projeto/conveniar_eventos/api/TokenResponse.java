@@ -3,14 +3,13 @@ package com.projeto.conveniar_eventos.api;
 import com.google.gson.annotations.SerializedName;
 
 public class TokenResponse {
-    @SerializedName("accessToken")
-    private String accessToken;
 
-    public String getAccessToken() {
-        return accessToken;
-    }
+    @SerializedName("acessToken")
+    private String acessToken;
 
-    public void setAccessToken(String accessToken) {
-        this.accessToken = accessToken;
-    }
+    @SerializedName("expires")
+    private int expires;
+
+    public String getAcessToken() { return acessToken; }
+    public int    getExpires()    { return expires; }
 }

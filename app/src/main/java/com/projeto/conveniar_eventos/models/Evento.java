@@ -1,7 +1,16 @@
 package com.projeto.conveniar_eventos.models;
 
+import com.projeto.conveniar_eventos.api.model.EventoListaResponse;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 public class Evento {
 
@@ -83,5 +92,90 @@ public class Evento {
     /** Diminui as vagas em 1. Chamado após inscrição confirmada. */
     public void decrementarVaga() {
         if (vagas > 0) vagas--;
+    }
+
+    // ── Mapeamento da API ────────────────────────────────────────────
+
+    // codEventoTipo da API → constante local de tipoEvento
+    private static final Map<Integer, String> TIPO_POR_COD;
+    static {
+        Map<Integer, String> m = new HashMap<>();
+        m.put(1, TIPO_GESTAO);
+        m.put(2, TIPO_TI);
+        m.put(3, TIPO_JURIDICO);
+        m.put(4, TIPO_COMUNICACAO);
+        TIPO_POR_COD = Collections.unmodifiableMap(m);
+    }
+
+    // Documentos requeridos por tipo de evento
+    public static final Map<String, List<String>> DOCS_POR_TIPO;
+    static {
+        Map<String, List<String>> m = new HashMap<>();
+        m.put(TIPO_GESTAO,      Arrays.asList(DOC_CPF, DOC_COMPROVANTE_VINCULO));
+        m.put(TIPO_TI,          Arrays.asList(DOC_CPF, DOC_CURRICULO));
+        m.put(TIPO_JURIDICO,    Arrays.asList(DOC_CPF, DOC_OAB, DOC_DIPLOMA));
+        m.put(TIPO_COMUNICACAO, Arrays.asList(DOC_CPF));
+        DOCS_POR_TIPO = Collections.unmodifiableMap(m);
+    }
+
+    /** Retorna a lista de documentos requeridos para um tipo de evento. */
+    public static List<String> docsPorTipo(String tipoEvento) {
+        return DOCS_POR_TIPO.getOrDefault(tipoEvento, Collections.emptyList());
+    }
+
+    private static final SimpleDateFormat FMT_API  = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault());
+    private static final SimpleDateFormat FMT_LOCAL = new SimpleDateFormat("dd/MM/yyyy",            Locale.getDefault());
+
+    /**
+     * Converte um {@link EventoListaResponse} (schema da API) para um {@link Evento} local.
+     *
+     * Detalhes como local, horário, instrutor, carga horária e descrição chegam como
+     * pares chave/valor dentro de {@code informacoes[]} e são extraídos pelo helper
+     * {@link EventoListaResponse#getInformacao(String)}.
+     */
+    public static Evento fromApi(EventoListaResponse r) {
+        String tipo     = TIPO_POR_COD.getOrDefault(r.getCodEventoTipo(), TIPO_GESTAO);
+        String dataIni  = formatarData(r.getDataInicio());
+        String dataFim  = formatarData(r.getDataFim());
+
+        String cargaStr = r.getInformacao("cargaHoraria");
+        int cargaHoraria = 0;
+        if (cargaStr != null) {
+            try { cargaHoraria = Integer.parseInt(cargaStr.trim()); } catch (NumberFormatException ignored) {}
+        }
+
+        List<String> docs = DOCS_POR_TIPO.getOrDefault(tipo, Collections.emptyList());
+
+        return new Evento(
+                r.getCodEvento(),
+                nvl(r.getNomeEvento(),   "Sem nome"),
+                nvl(r.getSituacao(),     "Em oferta"),
+                r.getNumeroVagas(),
+                dataIni,
+                dataFim,
+                nvl(r.getInformacao("horario"),   ""),
+                nvl(r.getInformacao("local"),      ""),
+                r.getPrimeiroValor(),
+                cargaHoraria,
+                nvl(r.getInformacao("instrutor"),  ""),
+                nvl(r.getInformacao("descricao"),  ""),
+                tipo,
+                nvl(r.getNomeConvenio(), ""),
+                docs
+        );
+    }
+
+    private static String formatarData(String iso) {
+        if (iso == null || iso.isEmpty()) return "";
+        try {
+            Date d = FMT_API.parse(iso);
+            return d != null ? FMT_LOCAL.format(d) : iso;
+        } catch (ParseException e) {
+            return iso;
+        }
+    }
+
+    private static String nvl(String value, String fallback) {
+        return (value != null && !value.isEmpty()) ? value : fallback;
     }
 }
