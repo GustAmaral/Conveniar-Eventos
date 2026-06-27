@@ -3,6 +3,7 @@ package com.projeto.conveniar_eventos.ui;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.view.MenuItem;
+import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -23,8 +24,17 @@ public abstract class BaseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setTitle(titulo);
+            // O layout do toolbar usa um TextView próprio (tv_toolbar_titulo)
+            // em vez do título nativo da ActionBar. É preciso desativar o
+            // título nativo (senão ele fica escondido/duplicado) e preencher
+            // o TextView manualmente — senão o título nunca aparece.
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(exibirBotaoVoltar);
+        }
+
+        TextView tvTitulo = toolbar.findViewById(R.id.tv_toolbar_titulo);
+        if (tvTitulo != null) {
+            tvTitulo.setText(titulo);
         }
     }
 
@@ -75,7 +85,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 .remove(KEY_USER_NOME)
                 .apply();
 
-        Intent it = new Intent(this, MainActivity.class);
+        Intent it = new Intent(this, CadastroUsuario.class);
         it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(it);
         finish();
@@ -86,10 +96,22 @@ public abstract class BaseActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         if (id == android.R.id.home) {
-            onBackPressed();
+            voltarOuIrParaHome();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    protected void voltarOuIrParaHome() {
+        if (isTaskRoot()) {
+            Intent it = new Intent(this, MainActivity.class);
+            it.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(it);
+            finish();
+        } else {
+            onBackPressed();
+        }
     }
 }

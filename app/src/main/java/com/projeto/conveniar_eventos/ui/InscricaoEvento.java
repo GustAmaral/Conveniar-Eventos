@@ -2,6 +2,7 @@ package com.projeto.conveniar_eventos.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -225,6 +226,7 @@ public class InscricaoEvento extends BaseActivity {
 
         MockRepository.invalidarCache();
         Toast.makeText(this, "Inscrição realizada com sucesso!", Toast.LENGTH_LONG).show();
+        adicionarAoCalendario();
         finish();
     }
 
@@ -253,5 +255,70 @@ public class InscricaoEvento extends BaseActivity {
                 .build();
 
         WorkManager.getInstance(this).enqueue(request);
+    }
+
+    // ── Google Agenda (Opção A: Intent para o app de calendário) ─────
+
+    /**
+     * Abre o app de calendário padrão do usuário (geralmente o Google Agenda)
+     * com um evento pré-preenchido para ele confirmar o salvamento.
+     * Não requer permissão de WRITE_CALENDAR nem login Google, pois delega
+     * a inserção para o app de calendário via ACTION_INSERT.
+     */
+    private void adicionarAoCalendario() {
+        long[] horario = calcularHorarioEvento();
+        if (horario == null) return;
+
+        Intent intent = new Intent(Intent.ACTION_INSERT)
+                .setData(CalendarContract.Events.CONTENT_URI)
+                .putExtra(CalendarContract.Events.TITLE, evento.getCurso())
+                .putExtra(CalendarContract.Events.EVENT_LOCATION, evento.getLocal())
+                .putExtra(CalendarContract.Events.DESCRIPTION, evento.getDescricao())
+                .putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, horario[0])
+                .putExtra(CalendarContract.EXTRA_EVENT_END_TIME, horario[1]);
+
+        if (intent.resolveActivity(getPackageManager()) != null) {
+            startActivity(intent);
+        }
+    }
+
+    /**
+     * Converte a data de início do evento ("dd/MM/yyyy") e o horário
+     * (ex: "14h00 às 17h00") em um par [inicioMillis, fimMillis].
+     * Retorna null se não for possível interpretar o horário.
+     */
+    private long[] calcularHorarioEvento() {
+        try {
+            String horarioStr = evento.getHorario();
+            if (horarioStr == null || horarioStr.trim().isEmpty()) return null;
+
+            String[] partes = horarioStr.split("às");
+            String horaInicioStr = partes[0].trim().replace("h", ":");
+            String horaFimStr    = partes.length > 1 ? partes[1].trim().replace("h", ":") : horaInicioStr;
+
+            // Garante formato HH:mm mesmo se vier "14:0" → "14:00"
+            horaInicioStr = normalizarHora(horaInicioStr);
+            horaFimStr    = normalizarHora(horaFimStr);
+
+            SimpleDateFormat fmt = new SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault());
+            Date inicio = fmt.parse(evento.getDataInicio() + " " + horaInicioStr);
+            Date fim    = fmt.parse(evento.getDataInicio() + " " + horaFimStr);
+
+            if (inicio == null || fim == null) return null;
+            return new long[]{ inicio.getTime(), fim.getTime() };
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /** Normaliza strings de hora tipo "14:0" ou "9:00" para "HH:mm" com 2 dígitos. */
+    private String normalizarHora(String hora) {
+        String[] partes = hora.split(":");
+        String hh = partes[0].trim();
+        String mm = partes.length > 1 ? partes[1].trim() : "00";
+        if (hh.length() == 1) hh = "0" + hh;
+        if (mm.length() == 1) mm = mm + "0";
+        if (mm.isEmpty()) mm = "00";
+        return hh + ":" + mm;
     }
 }

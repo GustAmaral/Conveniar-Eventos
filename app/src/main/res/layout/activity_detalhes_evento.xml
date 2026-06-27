@@ -15,70 +15,109 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:padding="16dp"
+        android:padding="14dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:text="Dados do Curso"
-            android:textColor="#0067AB"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tv_valor_nome"
+        <!-- Card resumo do curso -->
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Nome do curso"
-            android:textColor="#333"
-            android:textSize="18sp"
-            android:textStyle="bold" />
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
 
-        <TextView
-            android:id="@+id/tv_meta_info"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Metadados do evento"
-            android:textColor="#555"
-            android:textSize="14sp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="14dp">
 
-        <TextView
-            android:id="@+id/tv_valor_vagas"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Vagas: 0"
-            android:textColor="#666"
-            android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/tv_valor_nome"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#111111"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:lineSpacingMultiplier="1.3"
+                    android:layout_marginBottom="12dp" />
 
+                <TextView
+                    android:id="@+id/tv_local"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#555555"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="6dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    app:drawableStartCompat="@drawable/ic_location" />
+
+                <TextView
+                    android:id="@+id/tv_meta_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#555555"
+                    android:textSize="13sp"
+                    android:layout_marginBottom="6dp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    app:drawableStartCompat="@drawable/ic_calendar" />
+
+                <TextView
+                    android:id="@+id/tv_carga"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="#555555"
+                    android:textSize="13sp"
+                    android:drawablePadding="8dp"
+                    android:gravity="center_vertical"
+                    app:drawableStartCompat="@drawable/ic_clock" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:background="#E8E8E8"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="10dp" />
+
+                <!-- Situação + vagas + preço numa linha só -->
+                <TextView
+                    android:id="@+id/tv_valor_vagas"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <!-- WebView -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="12dp">
+            android:layout_marginTop="10dp"
+            app:cardCornerRadius="10dp"
+            app:cardElevation="0dp">
 
             <WebView
                 android:id="@+id/web_informacoes"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
+
         </androidx.cardview.widget.CardView>
 
         <Button
             android:id="@+id/btn_inscrever"
             android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_marginTop="16dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
             android:backgroundTint="#0067AB"
             android:text="Quero me inscrever"
             android:textColor="#FFFFFF"
-            android:textSize="18sp"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:cornerRadius="8dp"/>
+            app:cornerRadius="8dp" />
+
     </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

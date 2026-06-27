@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,17 @@ import com.projeto.conveniar_eventos.data.DatabaseHelper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Tela unificada de Login / Cadastro.
@@ -44,11 +56,14 @@ public class CadastroUsuario extends BaseActivity {
 
     // Views — Cadastro
     private LinearLayout layoutCadastro;
-    private EditText etCadNome, etCadCpf, etCadEmail,
+    private EditText etCadNome, etCadCpf, etCadEmail, etCadEmailConf,
             etCadTelefone, etCadOrgao, etCadCargo,
             etCadSenha, etCadSenhaConf;
     private Button   btnCadastrar;
     private TextView tvAlternarLogin;
+
+    // Executor para checagem de e-mail assíncrona
+    private final ExecutorService emailCheckExecutor = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +92,7 @@ public class CadastroUsuario extends BaseActivity {
         etCadNome           = findViewById(R.id.et_cad_nome);
         etCadCpf            = findViewById(R.id.et_cad_cpf);
         etCadEmail          = findViewById(R.id.et_cad_email);
+        etCadEmailConf      = findViewById(R.id.et_cad_email_conf);
         etCadTelefone       = findViewById(R.id.et_cad_telefone);
         etCadOrgao          = findViewById(R.id.et_cad_orgao);
         etCadCargo          = findViewById(R.id.et_cad_cargo);
@@ -146,8 +162,12 @@ public class CadastroUsuario extends BaseActivity {
             Toast.makeText(this, "Preencha todos os campos obrigatórios (*).", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (cpf.length() != 11) {
-            Toast.makeText(this, "CPF inválido (informe apenas os 11 dígitos).", Toast.LENGTH_SHORT).show();
+        if (!cpfValido(cpf)) {
+            Toast.makeText(this, "CPF inválido. Verifique os números digitados.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        if (!emailValido(email)) {
+            Toast.makeText(this, "E-mail inválido. Verifique o formato digitado.", Toast.LENGTH_SHORT).show();
             return;
         }
         if (!senha.equals(senhaC)) {
@@ -166,14 +186,58 @@ public class CadastroUsuario extends BaseActivity {
             return;
         }
 
-        long id = db.cadastrarUsuario(nome, cpf, email, telefone, orgao, cargo, sha256(senha));
-        if (id > 0) {
-            salvarSessao(id, nome);
-            Toast.makeText(this, "Cadastro realizado! Bem-vindo(a), " + nome + "!", Toast.LENGTH_SHORT).show();
-            redirecionarAposLogin();
-        } else {
-            Toast.makeText(this, "Erro ao cadastrar. Tente novamente.", Toast.LENGTH_SHORT).show();
+        btnCadastrar.setEnabled(false);
+        Toast.makeText(this, "Verificando e-mail...", Toast.LENGTH_SHORT).show();
+
+        verificarDominioEmail(email, dominioValido -> {
+            if (!dominioValido) {
+                btnCadastrar.setEnabled(true);
+                Toast.makeText(this, "O domínio do e-mail informado não existe. Verifique e tente novamente.", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            long id = db.cadastrarUsuario(nome, cpf, email, telefone, orgao, cargo, sha256(senha));
+            btnCadastrar.setEnabled(true);
+            if (id > 0) {
+                salvarSessao(id, nome);
+                Toast.makeText(this, "Cadastro realizado! Bem-vindo(a), " + nome + "!", Toast.LENGTH_SHORT).show();
+                redirecionarAposLogin();
+            } else {
+                Toast.makeText(this, "Erro ao cadastrar. Tente novamente.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // ── Validações ────────────────────────────────────────────────────
+
+    private boolean cpfValido(String cpf) {
+        if (cpf == null || cpf.length() != 11) return false;
+        if (cpf.matches("(\\d)\\1{10}")) return false;
+
+        try {
+            int soma = 0;
+            for (int i = 0; i < 9; i++) {
+                soma += (cpf.charAt(i) - '0') * (10 - i);
+            }
+            int d1 = 11 - (soma % 11);
+            if (d1 >= 10) d1 = 0;
+
+            soma = 0;
+            for (int i = 0; i < 10; i++) {
+                soma += (cpf.charAt(i) - '0') * (11 - i);
+            }
+            int d2 = 11 - (soma % 11);
+            if (d2 >= 10) d2 = 0;
+
+            return d1 == (cpf.charAt(9) - '0') && d2 == (cpf.charAt(10) - '0');
+        } catch (Exception e) {
+            return false;
         }
+    }
+
+    private boolean emailValido(String email) {
+        return email != null && !email.isEmpty()
+                && Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 
     // ── Helpers ───────────────────────────────────────────────────────
@@ -207,7 +271,59 @@ public class CadastroUsuario extends BaseActivity {
             for (byte b : bytes) sb.append(String.format("%02x", b));
             return sb.toString();
         } catch (NoSuchAlgorithmException e) {
-            return input; // fallback (não deve ocorrer)
+            return input;
         }
+    }
+
+    /**
+     * Verifica, de forma assíncrona, se o domínio do e-mail possui registro MX
+     * configurado (ou seja, se é capaz de receber e-mails). Não garante que a
+     * caixa específica existe, mas elimina domínios inexistentes/digitados errado.
+     */
+    private void verificarDominioEmail(String email, EmailDomainCallback callback) {
+        String dominio = email.substring(email.indexOf('@') + 1).trim();
+
+        emailCheckExecutor.execute(() -> {
+            boolean dominioValido = false;
+            try {
+                URL url = new URL("https://dns.google/resolve?name=" + dominio + "&type=MX");
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setConnectTimeout(5000);
+                conn.setReadTimeout(5000);
+                conn.setRequestMethod("GET");
+
+                int status = conn.getResponseCode();
+                if (status == 200) {
+                    StringBuilder sb = new StringBuilder();
+                    try (BufferedReader br = new BufferedReader(
+                            new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))) {
+                        String linha;
+                        while ((linha = br.readLine()) != null) sb.append(linha);
+                    }
+                    JSONObject json = new JSONObject(sb.toString());
+                    JSONArray answer = json.optJSONArray("Answer");
+                    dominioValido = answer != null && answer.length() > 0;
+                }
+                conn.disconnect();
+            } catch (Exception e) {
+                // Falha de rede/timeout: não bloqueia o cadastro, apenas não confirma.
+                // Tratamos como "não foi possível verificar" e deixamos passar,
+                // para não impedir cadastro por instabilidade de conexão.
+                dominioValido = true;
+            }
+
+            boolean resultadoFinal = dominioValido;
+            runOnUiThread(() -> callback.onResultado(resultadoFinal));
+        });
+    }
+
+    private interface EmailDomainCallback {
+        void onResultado(boolean dominioValido);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        emailCheckExecutor.shutdownNow();
     }
 }
