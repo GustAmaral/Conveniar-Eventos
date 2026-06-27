@@ -4,12 +4,15 @@ import android.graphics.Color;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.View;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.ForegroundColorSpan;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.webkit.WebView;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
@@ -33,15 +36,11 @@ public class DetalhesEvento extends BaseActivity {
 
         getWindow().setNavigationBarColor(Color.parseColor("#DDE2E6"));
         WindowInsetsControllerCompat controller =
-                WindowCompat.getInsetsController(
-                        getWindow(),
-                        getWindow().getDecorView()
-                );
+                WindowCompat.getInsetsController(getWindow(), getWindow().getDecorView());
         controller.setAppearanceLightNavigationBars(true);
 
         setContentView(R.layout.activity_detalhes_evento);
 
-        // ── Recupera o evento pelo ID recebido via Intent ─────────────
         int eventoId = getIntent().getIntExtra("EVENTO_ID", -1);
         List<Evento> eventos = MockRepository.getEventos(this);
         for (Evento e : eventos) {
@@ -54,28 +53,32 @@ public class DetalhesEvento extends BaseActivity {
             return;
         }
 
+        // ── Toolbar com título menor para não cortar ──────────────────
         configurarToolbar(evento.getCurso(), true);
-
+        Toolbar toolbar = findViewById(R.id.toolbar);
         // ── Vincula views ─────────────────────────────────────────────
-        TextView tvNome      = findViewById(R.id.tv_valor_nome);
-        TextView tvMeta      = findViewById(R.id.tv_meta_info);
-        TextView tvVagas     = findViewById(R.id.tv_valor_vagas);
-        WebView  webView     = findViewById(R.id.web_informacoes);
+        TextView tvNome       = findViewById(R.id.tv_valor_nome);
+        TextView tvLocal      = findViewById(R.id.tv_local);
+        TextView tvMeta       = findViewById(R.id.tv_meta_info);
+        TextView tvCarga      = findViewById(R.id.tv_carga);
+        TextView tvVagas      = findViewById(R.id.tv_valor_vagas);
+        WebView  webView      = findViewById(R.id.web_informacoes);
         Button   btnInscrever = findViewById(R.id.btn_inscrever);
 
-        // ── Preenche dados básicos ────────────────────────────────────
+        // ── Preenche card resumo ──────────────────────────────────────
         tvNome.setText(evento.getCurso());
+        tvLocal.setText(evento.getLocal());
 
-        String meta = evento.getLocal() + "  •  " +
-                evento.getDataInicio() +
+        String datas = evento.getDataInicio() +
                 (evento.getDataFim().equals(evento.getDataInicio()) ? "" : " a " + evento.getDataFim()) +
-                "  •  " + evento.getHorario() +
-                "  •  " + evento.getCargaHoraria() + "h";
-        tvMeta.setText(meta);
+                "  ·  " + evento.getHorario();
+        tvMeta.setText(datas);
+
+        tvCarga.setText("Carga horária: " + evento.getCargaHoraria() + "h");
 
         atualizarVagasView(tvVagas);
 
-        // ── WebView com HTML rico ─────────────────────────────────────
+        // ── WebView ───────────────────────────────────────────────────
         webView.loadDataWithBaseURL(null, montarHtml(), "text/html", "UTF-8", null);
 
         // ── Botão inscrever ───────────────────────────────────────────
@@ -94,7 +97,6 @@ public class DetalhesEvento extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // Atualiza vagas caso o usuário tenha voltado da tela de inscrição
         TextView tvVagas = findViewById(R.id.tv_valor_vagas);
         if (tvVagas != null && evento != null) {
             int vagasAtuais = DatabaseHelper.getInstance(this).getVagasDisponiveis(evento.getId());
@@ -105,15 +107,24 @@ public class DetalhesEvento extends BaseActivity {
 
     private void atualizarVagasView(TextView tvVagas) {
         int vagasBanco = DatabaseHelper.getInstance(this).getVagasDisponiveis(evento.getId());
-        String valorStr = evento.getValor() == 0
-                ? "Gratuito"
-                : String.format("R$ %.2f", evento.getValor());
+        String valorStr = evento.getValor() == 0 ? "Gratuito" : String.format("R$ %.2f", evento.getValor());
+        boolean emAndamento = evento.getSituacao().equalsIgnoreCase("Em andamento");
 
-        if (evento.getSituacao().equalsIgnoreCase("Em andamento")) {
-            tvVagas.setText("Status: Em andamento  |  " + valorStr);
-        } else {
-            tvVagas.setText("Vagas disponíveis: " + vagasBanco + "  |  " + valorStr);
-        }
+        // Monta: "Em andamento  ·  Gratuito" ou "30 vagas  ·  R$ 250,00"
+        // com a situação colorida
+        String situacao = emAndamento ? "Em andamento" : "Em oferta";
+        String resto = emAndamento
+                ? "  ·  " + valorStr
+                : "  ·  " + vagasBanco + " vagas  ·  " + valorStr;
+
+        SpannableString span = new SpannableString(situacao + resto);
+        int corSituacao = emAndamento
+                ? Color.parseColor("#E65100")
+                : Color.parseColor("#0067AB");
+        span.setSpan(new ForegroundColorSpan(corSituacao), 0, situacao.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        span.setSpan(new android.text.style.StyleSpan(android.graphics.Typeface.BOLD), 0, situacao.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        tvVagas.setText(span);
     }
 
     private void aoClicarInscrever() {
@@ -121,7 +132,6 @@ public class DetalhesEvento extends BaseActivity {
         long userId = prefs.getLong(KEY_USER_ID, -1);
 
         if (userId == -1) {
-            // Usuário não logado → vai para login/cadastro
             Toast.makeText(this,
                     "Você precisa estar cadastrado para se inscrever.",
                     Toast.LENGTH_LONG).show();
@@ -129,7 +139,6 @@ public class DetalhesEvento extends BaseActivity {
             it.putExtra("EVENTO_ID_APOS_LOGIN", evento.getId());
             startActivity(it);
         } else {
-            // Já logado → vai direto para formulário de inscrição
             if (DatabaseHelper.getInstance(this).jaInscrito(userId, evento.getId())) {
                 Toast.makeText(this, "Você já está inscrito neste evento!", Toast.LENGTH_LONG).show();
                 return;
@@ -157,15 +166,11 @@ public class DetalhesEvento extends BaseActivity {
                 ".badge{display:inline-block;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:bold;}" +
                 ".oferta{background:#e3f2fd;color:#0067AB;}" +
                 ".andamento{background:#fff3e0;color:#e65100;}" +
-                ".tag{background:#f0f0f0;border-radius:8px;padding:2px 8px;font-size:12px;margin-right:4px;}" +
                 "</style></head><body>" +
-
                 "<h2>Sobre o curso</h2>" +
                 "<p>" + evento.getDescricao() + "</p>" +
-
                 "<h2>Instrutor</h2>" +
                 "<p>" + evento.getInstrutor() + "</p>" +
-
                 "<h2>Informações Gerais</h2>" +
                 "<ul>" +
                 "<li><b>Data:</b> " + evento.getDataInicio() +
@@ -178,7 +183,6 @@ public class DetalhesEvento extends BaseActivity {
                 (evento.getSituacao().equalsIgnoreCase("Em oferta") ? "oferta" : "andamento") + "'>" +
                 evento.getSituacao() + "</span></li>" +
                 "</ul>" +
-
                 "<h2>Regras de Inscrição</h2>" +
                 "<ul>" +
                 "<li>A inscrição deve ser confirmada mediante pagamento do boleto em até 3 dias úteis.</li>" +
@@ -186,8 +190,7 @@ public class DetalhesEvento extends BaseActivity {
                 "<li>O material didático é enviado por e-mail 24h antes do início.</li>" +
                 "<li>Cancelamentos solicitados com menos de 48h não geram reembolso.</li>" +
                 "</ul>" +
-
-                "<p style='font-size:12px;color:#999;margin-top:16px;'>Para mais informações, acesse o portal da fundação ou entre em contato com o suporte.</p>" +
+                "<p style='font-size:12px;color:#999;margin-top:16px;'>Para mais informações, acesse o portal da fundação.</p>" +
                 "</body></html>";
     }
 }

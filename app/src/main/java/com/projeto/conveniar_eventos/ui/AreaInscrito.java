@@ -3,6 +3,8 @@ package com.projeto.conveniar_eventos.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
@@ -60,6 +62,23 @@ public class AreaInscrito extends BaseActivity {
                 startActivity(it);
             }));
         }
+    }
+
+    // ── Menu do toolbar (ícone de logout) ──────────────────────────────
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_area_inscrito, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_logout) {
+            realizarLogout();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private List<InscricaoAdapter.ItemInscricao> carregarInscricoes(long userId) {
