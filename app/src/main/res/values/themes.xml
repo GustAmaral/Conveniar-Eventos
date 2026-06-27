@@ -11,6 +11,11 @@
         <item name="colorAccent">#0067AB</item>
     </style>
 
+    <style name="ThemeOverlay.ConveniarEventos.BottomNav" parent="">
+        <item name="colorSecondaryContainer">@color/colorPrimary</item>
+        <item name="colorOnSecondaryContainer">@android:color/white</item>
+    </style>
+
     <style name="Theme.ConveniarEventos.Splash"
         parent="Theme.SplashScreen">
 

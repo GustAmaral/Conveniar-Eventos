@@ -3,7 +3,6 @@ package com.projeto.conveniar_eventos.ui;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 
@@ -14,6 +13,7 @@ import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkManager;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.projeto.conveniar_eventos.R;
 import com.projeto.conveniar_eventos.adapters.InscricaoAdapter;
 import com.projeto.conveniar_eventos.data.DatabaseHelper;
@@ -32,6 +32,9 @@ public class AreaInscrito extends BaseActivity {
         setContentView(R.layout.activity_area_inscrito);
 
         configurarToolbar("Meus Eventos", false);
+
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_nav);
+        configurarBottomNav(bottomNav, R.id.nav_inscrito);
 
         TextView tvBoasVindas = findViewById(R.id.tv_boas_vindas);
         RecyclerView rvInscricoes = findViewById(R.id.rv_inscricoes);
@@ -144,9 +147,4 @@ public class AreaInscrito extends BaseActivity {
         WorkManager.getInstance(this).enqueue(request);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_com_logout, menu);
-        return true;
-    }
 }

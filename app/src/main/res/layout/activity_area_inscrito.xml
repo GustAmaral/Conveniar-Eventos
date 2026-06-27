@@ -16,6 +16,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="18dp"
+        android:paddingBottom="74dp"
+        android:clipToPadding="false"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <TextView
@@ -52,5 +54,17 @@
             android:clipToPadding="false"
             android:paddingBottom="8dp" />
     </LinearLayout>
+
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_nav"
+        android:theme="@style/ThemeOverlay.ConveniarEventos.BottomNav"
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_gravity="bottom"
+        android:background="?attr/colorSurface"
+        app:labelVisibilityMode="unlabeled"
+        app:itemIconTint="@color/bottom_nav_icon_color"
+        app:menu="@menu/menu_bottom_nav" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
