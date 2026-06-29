@@ -149,11 +149,13 @@ public class MenuSelecione extends BaseActivity {
                 editDataFiltro.setText(formatted.toString());
                 editDataFiltro.setSelection(formatted.length());
                 isUpdating = false;
+
+                // Só filtra DEPOIS da formatação terminar, evitando que
+                // aplicarFiltros() rode com texto cru (ex: "1010202" sem barras)
+                aplicarFiltros();
             }
         });
-
         editSearch.addTextChangedListener(watcher);
-        editDataFiltro.addTextChangedListener(watcher);
 
         // 6. Permitir desclicar nos RadioButtons de Status
         View.OnClickListener radioClickListener = new View.OnClickListener() {
