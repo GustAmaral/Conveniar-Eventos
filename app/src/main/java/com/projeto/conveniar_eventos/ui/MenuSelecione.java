@@ -155,6 +155,7 @@ public class MenuSelecione extends BaseActivity {
                 aplicarFiltros();
             }
         });
+        editSearch.addTextChangedListener(watcher);
 
         // 6. Permitir desclicar nos RadioButtons de Status
         View.OnClickListener radioClickListener = new View.OnClickListener() {
